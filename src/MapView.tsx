@@ -40,9 +40,11 @@ const initialWays: Way[] = [
   },
 ];
 
-function debounce(func, timeout = 1000) {
-  let timer;
-  return (...args) => {
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+function debounce(this: any, func: any, timeout = 1000) {
+  let timer: ReturnType<typeof setTimeout>;
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  return (...args: any[]) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       func.apply(this, args);
