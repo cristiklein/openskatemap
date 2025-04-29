@@ -122,10 +122,26 @@ const RoadUpdater = ({
   };
 
   return (
-    <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 1000, background: 'white', padding: '8px', borderRadius: '8px' }}>
-      <button onClick={() => updateClosestRoadQuality('green')} style={{ background: 'green', color: 'white', marginRight: '5px' }}>Green</button>
-      <button onClick={() => updateClosestRoadQuality('yellow')} style={{ background: 'gold', color: 'black', marginRight: '5px' }}>Yellow</button>
-      <button onClick={() => updateClosestRoadQuality('red')} style={{ background: 'red', color: 'white' }}>Red</button>
+    <div style={{
+      position: 'absolute',
+      top: 10,
+      right: 10,
+      zIndex: 1000,
+      background: 'white',
+      padding: '8px',
+      borderRadius: '8px',
+      display: 'grid',
+      gridAutoFlow: 'row',
+      gridAutoColumns: '1fr',
+      gap: 5,
+    }}>
+      <div>Edit asphalt quality:</div>
+      <div>
+        <button onClick={() => updateClosestRoadQuality('green')} style={{ background: 'green', color: 'white', marginRight: '5px' }}>Green</button>
+        <button onClick={() => updateClosestRoadQuality('yellow')} style={{ background: 'gold', color: 'black', marginRight: '5px' }}>Yellow</button>
+        <button onClick={() => updateClosestRoadQuality('red')} style={{ background: 'red', color: 'white' }}>Red</button>
+      </div>
+      <div>⚠️ This is just a Proof-of-Concept.<br/>Your edits WILL NOT be saved.</div>
     </div>
   );
 };
