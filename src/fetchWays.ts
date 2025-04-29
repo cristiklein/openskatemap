@@ -16,6 +16,8 @@ export default async function fetchWays(
     (
       way["highway"="cycleway"](${south},${west},${north},${east});
       way["cycleway"~"."](${south},${west},${north},${east});
+      way["highway"="footway"](${south},${west},${north},${east});
+      way["footway"~"."](${south},${west},${north},${east});
     );
     out geom;
   `;
