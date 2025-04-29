@@ -176,6 +176,17 @@ const MapView = () => {
         ))}
         {followUser && <UserLocationTracker />}
       </MapContainer>
+      <div style={{
+        position: 'absolute',
+        bottom: '0%',
+        left: '0%',
+        zIndex: 1000,
+        background: 'white',
+        fontSize: 10,
+        padding: 2,
+      }}>
+        OpenStakeMap { __APP_VERSION__ }
+      </div>
     </div>
   );
 };
