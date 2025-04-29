@@ -1,18 +1,12 @@
 import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { LatLngExpression, latLng } from 'leaflet';
+import { Quality, Way } from './types';
+import debounce from 'lodash.debounce';
+import fetchWays from './fetchWays';
 import UserLocationTracker from './UserLocationTracker';
-import axios from 'axios';
 
 const center: LatLngExpression = [55.60249267294951, 12.967599313254912];
-
-type Quality = 'green' | 'yellow' | 'red' | 'grey';
-
-interface Way {
-  id: number;
-  path: LatLngExpression[];
-  quality: Quality;
-}
 
 const initialWays: Way[] = [
   {
@@ -41,18 +35,6 @@ const initialWays: Way[] = [
   },
 ];
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-function debounce(this: any, func: any, timeout = 1000) {
-  let timer: ReturnType<typeof setTimeout>;
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  return (...args: any[]) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      func.apply(this, args);
-    }, timeout);
-  };
-}
-
 const WayUpdater = ({
   ways,
   setWays,
@@ -70,55 +52,19 @@ const WayUpdater = ({
 }) => {
   const map = useMap();
 
-  const fetchWays = async () => {
-    const bounds = map.getBounds();
-    const south = bounds.getSouth();
-    const west = bounds.getWest();
-    const north = bounds.getNorth();
-    const east = bounds.getEast();
-
-    const query = `
-      [out:json][timeout:25];
-      (
-        way["highway"="cycleway"](${south},${west},${north},${east});
-        way["cycleway"~"."](${south},${west},${north},${east});
-      );
-      out geom;
-    `;
-
-    const url = 'https://overpass-api.de/api/interpreter';
-
-    try {
-      const response = await axios.post(url, query, {
-        headers: { 'Content-Type': 'text/plain' },
-      });
-
-      const elements = response.data.elements;
-
-      const newWays: Way[] = elements
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-        .filter((el: any) => el.type === 'way' && el.geometry)
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-        .map((way: any) => ({
-          id: way.id,
-          /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-          path: way.geometry.map((g: any) => [g.lat, g.lon]) as LatLngExpression[],
-          quality: 'grey', // default quality
-        }));
-
+  const debouncedFetchWays = useMemo(() => {
+    return debounce(async () => {
+      const bounds = map.getBounds();
+      const newWays = await fetchWays(bounds);
       setWays(newWays);
-    } catch (error) {
-      console.error('Failed to fetch ways', error);
-    }
-  };
-
-  const debouncedFetchWays = debounce(() => fetchWays());
+    }, 500);
+  }, [map, setWays]);
 
   useEffect(() => {
     debouncedFetchWays(); // initial fetch
-    map.on('move', debouncedFetchWays)
+    map.on('moveend', debouncedFetchWays)
     return () => {
-      map.off('move', debouncedFetchWays)
+      map.off('moveend', debouncedFetchWays)
     }
   }, [map, debouncedFetchWays]);
 
