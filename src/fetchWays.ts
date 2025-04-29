@@ -1,4 +1,4 @@
-import { LatLngBounds, LatLngExpression } from 'leaflet';
+import { LatLngBounds, latLng } from 'leaflet';
 import { Way } from './types';
 import axios from 'axios';
 
@@ -40,7 +40,7 @@ export default async function fetchWays(
     .map((way: any) => ({
       id: way.id,
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      path: way.geometry.map((g: any) => [g.lat, g.lon]) as LatLngExpression[],
+      path: way.geometry.map((g: any) => latLng(g.lat, g.lon)),
       quality: defaultQuality,
     }));
 

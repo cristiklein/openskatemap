@@ -1,35 +1,36 @@
 import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet';
 import { useEffect, useMemo, useState } from 'react';
-import { LatLngExpression, latLng } from 'leaflet';
+import { latLng, LatLng } from 'leaflet';
 import { Quality, Way } from './types';
 import debounce from 'lodash.debounce';
 import fetchWays from './fetchWays';
 import UserLocationTracker from './UserLocationTracker';
+import { getDistanceToLineSegment } from './utils';
 
-const center: LatLngExpression = [55.60249267294951, 12.967599313254912];
+const center: LatLng = latLng([55.60249267294951, 12.967599313254912]);
 
 const initialWays: Way[] = [
   {
     id: 1,
     path: [
-      [55.6025, 12.9675],
-      [55.6030, 12.9678],
+      latLng([55.6025, 12.9675]),
+      latLng([55.6030, 12.9678]),
     ],
     quality: 'red',
   },
   {
     id: 2,
     path: [
-      [55.6020, 12.9670],
-      [55.6023, 12.9674],
+      latLng([55.6020, 12.9670]),
+      latLng([55.6023, 12.9674]),
     ],
     quality: 'yellow',
   },
   {
     id: 3,
     path: [
-      [55.6015, 12.9665],
-      [55.6018, 12.9670],
+      latLng([55.6015, 12.9665]),
+      latLng([55.6018, 12.9670]),
     ],
     quality: 'green',
   },
@@ -69,20 +70,26 @@ const WayUpdater = ({
   }, [map, debouncedFetchWays]);
 
   const updateClosestWayQuality = (quality: Quality) => {
-    const centerLatLng = map.getCenter();
-
     let closestWayId: number | null = null;
     let closestDistance = Infinity;
 
+    const centerLatLng = map.getCenter();
+
     ways.forEach((way) => {
-      way.path.forEach((point) => {
-        const pointLatLng = latLng(point);
-        const distance = centerLatLng.distanceTo(pointLatLng);
+      for (let i = 0; i < way.path.length - 1; i++) {
+        const start = way.path[i];
+        const end = way.path[i + 1];
+
+        const distance = getDistanceToLineSegment(
+          centerLatLng,
+          start,
+          end);
+
         if (distance < closestDistance) {
           closestDistance = distance;
           closestWayId = way.id;
         }
-      });
+      }
     });
 
     if (closestWayId !== null) {
