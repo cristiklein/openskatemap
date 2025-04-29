@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy": "npm run build",
+    "predeploy": "(git diff-files --quiet || echo 'Please ensure workdir is clean.' && exit 1) && npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
