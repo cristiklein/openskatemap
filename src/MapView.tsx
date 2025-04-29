@@ -1,6 +1,7 @@
 import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet';
 import { useCallback, useEffect, useState } from 'react';
 import { LatLngExpression, latLng } from 'leaflet';
+import UserLocationTracker from './UserLocationTracker';
 import axios from 'axios';
 
 const center: LatLngExpression = [55.60249267294951, 12.967599313254912];
@@ -217,6 +218,7 @@ const MapView = () => {
             }}
           />
         ))}
+        <UserLocationTracker />
       </MapContainer>
     </div>
   );
