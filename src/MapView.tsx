@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LatLngExpression, latLng } from 'leaflet';
 import UserLocationTracker from './UserLocationTracker';
 import axios from 'axios';
@@ -58,11 +58,15 @@ const WayUpdater = ({
   setWays,
   userWayIdToQuality,
   setUserWayIdToQuality,
+  followUser,
+  setFollowUser,
 }: {
   ways: Way[];
   setWays: React.Dispatch<React.SetStateAction<Way[]>>;
   userWayIdToQuality: Map<number, Quality>;
   setUserWayIdToQuality: React.Dispatch<React.SetStateAction<Map<number, Quality>>>;
+  followUser: boolean;
+  setFollowUser: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const map = useMap();
 
@@ -110,17 +114,13 @@ const WayUpdater = ({
 
   const debouncedFetchWays = debounce(() => fetchWays());
 
-  const onMove = useCallback(() => {
-    debouncedFetchWays();
-  }, [map]);
-
   useEffect(() => {
     debouncedFetchWays(); // initial fetch
-    map.on('move', onMove)
+    map.on('move', debouncedFetchWays)
     return () => {
-      map.off('move', onMove)
+      map.off('move', debouncedFetchWays)
     }
-  }, [map, onMove]);
+  }, [map, debouncedFetchWays]);
 
   const updateClosestWayQuality = (quality: Quality) => {
     const centerLatLng = map.getCenter();
@@ -166,6 +166,13 @@ const WayUpdater = ({
         <button onClick={() => updateClosestWayQuality('red')} style={{ background: 'red', color: 'white' }}>Red</button>
       </div>
       <div>⚠️ This is just a Proof-of-Concept.<br/>Your edits WILL NOT be saved.</div>
+      <div><label><input
+        type="checkbox"
+        checked={followUser}
+        onChange={(e) => setFollowUser(e.target.checked)}
+      />
+        Center map on my location
+      </label></div>
     </div>
   );
 };
@@ -173,6 +180,7 @@ const WayUpdater = ({
 const MapView = () => {
   const [ways, setWays] = useState<Way[]>(initialWays);
   const [userWayIdToQuality, setUserWayIdToQuality] = useState(new Map<number, Quality>());
+  const [followUser, setFollowUser] = useState(true);
 
   return (
     <div style={{ height: '100vh', width: '100%' }}>
@@ -205,6 +213,8 @@ const MapView = () => {
           setWays={setWays}
           userWayIdToQuality={userWayIdToQuality}
           setUserWayIdToQuality={setUserWayIdToQuality}
+          followUser={followUser}
+          setFollowUser={setFollowUser}
         />
 
         {/* Draw all ways */}
@@ -218,7 +228,7 @@ const MapView = () => {
             }}
           />
         ))}
-        <UserLocationTracker />
+        {followUser && <UserLocationTracker />}
       </MapContainer>
     </div>
   );
