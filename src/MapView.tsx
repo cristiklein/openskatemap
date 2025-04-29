@@ -36,6 +36,8 @@ const initialWays: Way[] = [
   },
 ];
 
+const minZoomForWays = 14;
+
 const WayUpdater = ({
   ways,
   setWays,
@@ -55,6 +57,10 @@ const WayUpdater = ({
 
   const debouncedFetchWays = useMemo(() => {
     return debounce(async () => {
+      if (map.getZoom() < minZoomForWays) {
+        setWays([]);
+        return;
+      }
       const bounds = map.getBounds();
       const newWays = await fetchWays(bounds);
       setWays(newWays);

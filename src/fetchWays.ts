@@ -44,5 +44,7 @@ export default async function fetchWays(
       quality: defaultQuality,
     }));
 
+  console.log(`Got ${newWays.length} ways`);
+
   return newWays;
 };
