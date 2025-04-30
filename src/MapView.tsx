@@ -118,13 +118,19 @@ const WayUpdater = ({
       gridAutoColumns: '1fr',
       gap: 5,
     }}>
-      <div>Edit asphalt quality over "x" marker:</div>
-      <div>
-        <button onClick={() => updateClosestWayQuality('green')} style={{ background: 'green', color: 'white', marginRight: '5px' }}>Green</button>
-        <button onClick={() => updateClosestWayQuality('yellow')} style={{ background: 'gold', color: 'black', marginRight: '5px' }}>Yellow</button>
-        <button onClick={() => updateClosestWayQuality('red')} style={{ background: 'red', color: 'white' }}>Red</button>
-      </div>
-      <div>⚠️ This is just a Proof-of-Concept.<br/>Your edits WILL NOT be saved.</div>
+      { map.getZoom() < minZoomForWays ? (
+        <div>Zoom in to see and edit asphalt quality.</div>
+      ) : (
+        <>
+        <div>Edit asphalt quality over "x" marker:</div>
+        <div>
+          <button onClick={() => updateClosestWayQuality('green')} style={{ background: 'green', color: 'white', marginRight: '5px' }}>Green</button>
+          <button onClick={() => updateClosestWayQuality('yellow')} style={{ background: 'gold', color: 'black', marginRight: '5px' }}>Yellow</button>
+          <button onClick={() => updateClosestWayQuality('red')} style={{ background: 'red', color: 'white' }}>Red</button>
+        </div>
+        <div>⚠️ This is just a Proof-of-Concept.<br/>Your edits WILL NOT be saved.</div>
+      </>
+    )}
       <div><label><input
         type="checkbox"
         checked={followUser}
