@@ -16,10 +16,11 @@ export default async function fetchWays(
     [out:json][timeout:25];
     (
       way["highway"="cycleway"](${bbox});
-      way["cycleway"~"."](${bbox});
-      way["highway"="footway"](${bbox});
-      way["footway"~"."](${bbox});
-      way["highway"="secondary"]["cycleway"="lane"](${bbox});
+      way["bicycle"="designated"](${bbox});
+      way["cycleway"="shared_lane"](${bbox});
+      way["cycleway"="lane"](${bbox});
+      way["cycleway:left"](${bbox});
+      way["cycleway:right"](${bbox});
     );
     out geom;
   `;
