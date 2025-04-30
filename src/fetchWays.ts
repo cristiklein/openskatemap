@@ -10,15 +10,16 @@ export default async function fetchWays(
   const west = bounds.getWest();
   const north = bounds.getNorth();
   const east = bounds.getEast();
+  const bbox = `${south},${west},${north},${east}`;
 
   const query = `
     [out:json][timeout:25];
     (
-      way["highway"="cycleway"](${south},${west},${north},${east});
-      way["cycleway"~"."](${south},${west},${north},${east});
-      way["highway"="footway"](${south},${west},${north},${east});
-      way["footway"~"."](${south},${west},${north},${east});
-      way["highway"="secondary"]["cycleway"="lane"](${south},${west},${north},${east});
+      way["highway"="cycleway"](${bbox});
+      way["cycleway"~"."](${bbox});
+      way["highway"="footway"](${bbox});
+      way["footway"~"."](${bbox});
+      way["highway"="secondary"]["cycleway"="lane"](${bbox});
     );
     out geom;
   `;
