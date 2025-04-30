@@ -4,7 +4,6 @@ import axios from 'axios';
 
 export default async function fetchWays(
   bounds: LatLngBounds,
-  defaultQuality = 'grey',
 ): Promise<Way[]> {
   const south = bounds.getSouth();
   const west = bounds.getWest();
@@ -43,7 +42,6 @@ export default async function fetchWays(
       id: way.id,
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       path: way.geometry.map((g: any) => latLng(g.lat, g.lon)),
-      quality: defaultQuality,
     }));
 
   console.log(`Got ${newWays.length} ways`);

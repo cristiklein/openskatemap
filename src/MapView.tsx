@@ -16,7 +16,7 @@ const initialWays: Way[] = [
       latLng([55.6025, 12.9675]),
       latLng([55.6030, 12.9678]),
     ],
-    quality: 'bad',
+    quality: -1,
   },
   {
     id: 2,
@@ -24,7 +24,7 @@ const initialWays: Way[] = [
       latLng([55.6020, 12.9670]),
       latLng([55.6023, 12.9674]),
     ],
-    quality: 'medium',
+    quality: 0,
   },
   {
     id: 3,
@@ -32,7 +32,7 @@ const initialWays: Way[] = [
       latLng([55.6015, 12.9665]),
       latLng([55.6018, 12.9670]),
     ],
-    quality: 'good',
+    quality: 1,
   },
 ];
 
@@ -104,7 +104,23 @@ const WayUpdater = ({
     }
   };
 
-  const qualities: Quality[] = [ 'good', 'medium', 'bad' ]
+  const buttons = [
+    {
+      quality: 1,
+      label: 'Good',
+      color: 'green',
+    },
+    {
+      quality: 0,
+      label: 'Medium',
+      color: 'gold',
+    },
+    {
+      quality: -1,
+      label: 'Bad',
+      color: 'red',
+    },
+  ]
 
   return (
     <div style={{
@@ -126,18 +142,18 @@ const WayUpdater = ({
         <>
         <div>Mark asphalt quality over "x" marker:</div>
         <div>
-          { qualities.map(quality => (
+          { buttons.map(btn => (
             <button
-              key={quality}
-              onClick={() => updateClosestWayQuality(quality)}
+              key={btn.label}
+              onClick={() => updateClosestWayQuality(btn.quality)}
               style={{
-                background: qualityToColor(quality),
+                background: btn.color,
                 color: 'white',
                 marginRight: '5px',
                 minWidth: '64px',
               }}
             >
-            { quality[0].toUpperCase() + quality.slice(1) }
+            { btn.label  }
             </button>
           ))}
         </div>
@@ -158,11 +174,11 @@ const WayUpdater = ({
 
 function qualityToColor(quality: Quality): string {
   switch (quality) {
-    case 'good':
+    case 1:
       return 'green';
-    case 'medium':
+    case 0:
       return 'gold';
-    case 'bad':
+    case -1:
       return 'red';
     default:
       return 'grey'
@@ -215,7 +231,7 @@ const MapView = () => {
             key={way.id}
             positions={way.path}
             pathOptions={{
-              color: qualityToColor(userWayIdToQuality.get(way.id) || way.quality || 'unknown'),
+              color: qualityToColor(userWayIdToQuality.get(way.id)),
               weight: 5
             }}
           />
