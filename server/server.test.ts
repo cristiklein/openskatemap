@@ -8,31 +8,32 @@ beforeAll(async () => {
 });
 
 describe('Way Qualities API store', () => {
-  it('should accept a POST and return 204', async () => {
+  it('should accept PUT and return 204', async () => {
     const res = await request(app)
-      .post('/openskatemap/api/way-qualities')
+      .put('/openskatemap/api/way-qualities')
       .send([
-        { wayId: 12345, quality: 'good' },
-        { wayId: 12346, quality: 'medium' },
-        { wayId: 12347, quality: 'bad' },
+        { wayId: 12345, quality: +1 },
+        { wayId: 12346, quality: 0 },
+        { wayId: 12347, quality: -1 },
       ])
       .set('Content-Type', 'application/json');
 
     expect(res.statusCode).toBe(204);
   });
 
-  it('should return stored data with GET', async () => {
+  it('should accept POST and return stored data', async () => {
     const res = await request(app)
-      .get('/openskatemap/api/way-qualities?ids=12345,12346')
+      .post('/openskatemap/api/way-qualities')
+      .send([12345,12346])
       .set('Content-Type', 'application/json');
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual([
       expect.objectContaining(
-        { wayId: 12345, quality: 'good' }
+        { wayId: 12345, quality: +1 }
       ),
       expect.objectContaining(
-        { wayId: 12346, quality: 'medium' }
+        { wayId: 12346, quality: 0 }
       )
     ]);
   });

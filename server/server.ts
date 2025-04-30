@@ -1,17 +1,10 @@
 import express from 'express';
 import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import { open, Database } from 'sqlite';
 import cors from 'cors';
 import { z } from 'zod';
 
-const WayQualitySchema = z.object({
-  wayId: z.number().int().nonnegative(),
-  quality: z.enum(['good', 'medium', 'bad']),
-});
-
-const WayQualityArraySchema = z.array(WayQualitySchema);
-
-const app = express();
+const app: express.Application = express();
 app.use(express.json());
 
 const allowedOrigins = [
@@ -29,7 +22,7 @@ app.use(cors({
   }
 }));
 
-let db: sqlite3.Database;
+let db: Database<sqlite3.Database, sqlite3.Statement>;
 
 async function initDb(memory = false) {
   const database = await open({
@@ -41,7 +34,7 @@ async function initDb(memory = false) {
     CREATE TABLE IF NOT EXISTS way_qualities (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       way_id INTEGER NOT NULL,
-      quality TEXT NOT NULL CHECK (quality IN ('good', 'medium', 'bad')),
+      quality INTEGER NOT NULL,
       timestamp TEXT NOT NULL,
       ip TEXT
     );
@@ -52,15 +45,26 @@ async function initDb(memory = false) {
   db = database;
 }
 
-app.post('/openskatemap/api/way-qualities', async (req, res) => {
-  const result = WayQualityArraySchema.safeParse(req.body);
+const WayQualitiesPutSchema = z.array(
+  z.object({
+    wayId: z.number().int().nonnegative(),
+    quality: z.number().int(),
+  }),
+);
+
+app.put('/openskatemap/api/way-qualities', async (req, res) => {
+  const result = WayQualitiesPutSchema.safeParse(req.body);
 
   if (!result.success) {
-    return res.status(400).json({ error: 'Invalid request', details: result.error.issues });
+    res.status(400).json({
+      error: 'Invalid request',
+      details: result.error.issues
+    });
+    return;
   }
 
   const entries = result.data;
-  const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '') as string;
+  const ip = req.ip;
   const now = new Date().toISOString();
 
   const stmt = await db.prepare(
@@ -77,27 +81,36 @@ app.post('/openskatemap/api/way-qualities', async (req, res) => {
     res.sendStatus(204);
   } catch (e) {
     await db.run('ROLLBACK');
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ error: (e as Error).message });
   } finally {
     await stmt.finalize();
   }
 });
 
-const WayIdArraySchema = z.string()
-        .transform(value => value.split( ',' ).map( Number ))
-        .pipe(z.array(z.number().int().nonnegative()));
+const WayQualitiesPostSchema = z.array(
+  z.number().int().nonnegative(),
+);
+const MAX_IDS = 100;
 
-app.get('/openskatemap/api/way-qualities', async (req, res) => {
-  const result = WayIdArraySchema.safeParse(req.query.ids);
+app.post('/openskatemap/api/way-qualities', async (req, res) => {
+  const result = WayQualitiesPostSchema.safeParse(req.body);
 
   if (!result.success) {
-    console.error(result.error.issues);
-    return res.status(400).json({ error: 'Invalid request', details: result.error.issues });
+    res.status(400).json({
+      error: 'Invalid request',
+      details: result.error.issues
+    });
+    return;
   }
 
   const ids = result.data;
   if (ids.length === 0) {
-    return res.status(400).json({ error: 'No valid IDs provided' });
+    res.status(400).json({ error: 'No valid IDs provided' });
+    return;
+  }
+  if (ids.length > MAX_IDS) {
+    res.status(400).json({ error: `Too many IDs requested (max ${MAX_IDS})` });
+    return;
   }
 
   const placeholders = ids.map(() => '?').join(',');

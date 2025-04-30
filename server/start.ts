@@ -1,4 +1,4 @@
-import { app, initDb } from './server.ts';
+import { app, initDb } from './server';
 
 const PORT = process.env.PORT || 3000;
 
