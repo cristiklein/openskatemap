@@ -145,6 +145,7 @@ const WayUpdater = ({
     )}
       <div><label><input
         type="checkbox"
+        name="follow-user"
         checked={followUser}
         onChange={(e) => setFollowUser(e.target.checked)}
       />
