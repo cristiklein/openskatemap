@@ -121,10 +121,10 @@ const WayUpdater = ({
       gap: 5,
     }}>
       { map.getZoom() < minZoomForWays ? (
-        <div>Zoom in to see and edit asphalt quality.</div>
+        <div>Zoom in to see and mark asphalt quality.</div>
       ) : (
         <>
-        <div>Edit asphalt quality over "x" marker:</div>
+        <div>Mark asphalt quality over "x" marker:</div>
         <div>
           { qualities.map(quality => (
             <button
@@ -141,7 +141,7 @@ const WayUpdater = ({
             </button>
           ))}
         </div>
-        <div>⚠️ This is just a Proof-of-Concept.<br/>Your edits WILL NOT be saved.</div>
+        <div>⚠️ This is just a Proof-of-Concept.<br/>Your marks WILL NOT be saved.</div>
       </>
     )}
       <div><label><input
