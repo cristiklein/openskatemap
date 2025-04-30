@@ -1,6 +1,6 @@
 import { LatLng } from 'leaflet';
 
-export type Quality = 'green' | 'yellow' | 'red' | 'grey';
+export type Quality = 'good' | 'medium' | 'bad' | 'unknown';
 
 export interface Way {
   id: number;

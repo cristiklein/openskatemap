@@ -16,7 +16,7 @@ const initialWays: Way[] = [
       latLng([55.6025, 12.9675]),
       latLng([55.6030, 12.9678]),
     ],
-    quality: 'red',
+    quality: 'bad',
   },
   {
     id: 2,
@@ -24,7 +24,7 @@ const initialWays: Way[] = [
       latLng([55.6020, 12.9670]),
       latLng([55.6023, 12.9674]),
     ],
-    quality: 'yellow',
+    quality: 'medium',
   },
   {
     id: 3,
@@ -32,7 +32,7 @@ const initialWays: Way[] = [
       latLng([55.6015, 12.9665]),
       latLng([55.6018, 12.9670]),
     ],
-    quality: 'green',
+    quality: 'good',
   },
 ];
 
@@ -104,6 +104,8 @@ const WayUpdater = ({
     }
   };
 
+  const qualities: Quality[] = [ 'good', 'medium', 'bad' ]
+
   return (
     <div style={{
       position: 'absolute',
@@ -124,9 +126,19 @@ const WayUpdater = ({
         <>
         <div>Edit asphalt quality over "x" marker:</div>
         <div>
-          <button onClick={() => updateClosestWayQuality('green')} style={{ background: 'green', color: 'white', marginRight: '5px' }}>Green</button>
-          <button onClick={() => updateClosestWayQuality('yellow')} style={{ background: 'gold', color: 'black', marginRight: '5px' }}>Yellow</button>
-          <button onClick={() => updateClosestWayQuality('red')} style={{ background: 'red', color: 'white' }}>Red</button>
+          { qualities.map(quality => (
+            <button
+              onClick={() => updateClosestWayQuality(quality)}
+              style={{
+                background: qualityToColor(quality),
+                color: 'white',
+                marginRight: '5px',
+                minWidth: '64px',
+              }}
+            >
+            { quality[0].toUpperCase() + quality.slice(1) }
+            </button>
+          ))}
         </div>
         <div>⚠️ This is just a Proof-of-Concept.<br/>Your edits WILL NOT be saved.</div>
       </>
@@ -141,6 +153,19 @@ const WayUpdater = ({
     </div>
   );
 };
+
+function qualityToColor(quality: Quality): string {
+  switch (quality) {
+    case 'good':
+      return 'green';
+    case 'medium':
+      return 'gold';
+    case 'bad':
+      return 'red';
+    default:
+      return 'grey'
+  }
+}
 
 const MapView = () => {
   const [ways, setWays] = useState<Way[]>(initialWays);
@@ -188,7 +213,7 @@ const MapView = () => {
             key={way.id}
             positions={way.path}
             pathOptions={{
-              color: userWayIdToQuality.get(way.id) || way.quality || 'grey',
+              color: qualityToColor(userWayIdToQuality.get(way.id) || way.quality || 'unknown'),
               weight: 5
             }}
           />
