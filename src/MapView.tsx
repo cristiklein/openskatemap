@@ -128,6 +128,7 @@ const WayUpdater = ({
         <div>
           { qualities.map(quality => (
             <button
+              key={quality}
               onClick={() => updateClosestWayQuality(quality)}
               style={{
                 background: qualityToColor(quality),
