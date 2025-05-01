@@ -4,11 +4,23 @@ import cors from 'cors';
 import { z } from 'zod';
 import pinoHttp from 'pino-http';
 import logger from './logger';
+import promBundle from 'express-prom-bundle';
 
 const app: express.Application = express();
 app.use(express.json());
 app.use(pinoHttp({ logger }));
 app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
+
+const metricsMiddleware = promBundle({
+  includeMethod: true,
+  includePath: true,
+  includeStatusCode: true,
+  promClient: {
+    collectDefaultMetrics: {},
+  },
+});
+
+app.use(metricsMiddleware);
 
 const allowedOrigins = [
   'http://localhost:5173',
