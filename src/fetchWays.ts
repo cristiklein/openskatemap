@@ -44,7 +44,5 @@ export default async function fetchWays(
       path: way.geometry.map((g: any) => latLng(g.lat, g.lon)),
     }));
 
-  console.log(`Got ${newWays.length} ways`);
-
   return newWays;
 };

@@ -4,6 +4,7 @@ import { latLng, LatLng } from 'leaflet';
 import { Quality, Way } from './types';
 import debounce from 'lodash.debounce';
 import fetchWays from './fetchWays';
+import { fetchWayQualities, storeWayQualities } from './wayQualitiesService';
 import UserLocationTracker from './UserLocationTracker';
 import { getDistanceToLineSegment } from './utils';
 
@@ -43,15 +44,15 @@ const minZoomForWays = 15;
 const WayUpdater = ({
   ways,
   setWays,
-  userWayIdToQuality,
-  setUserWayIdToQuality,
+  wayQualities,
+  setWayQualities,
   followUser,
   setFollowUser,
 }: {
   ways: Way[];
   setWays: React.Dispatch<React.SetStateAction<Way[]>>;
-  userWayIdToQuality: Map<number, Quality>;
-  setUserWayIdToQuality: React.Dispatch<React.SetStateAction<Map<number, Quality>>>;
+  wayQualities: Map<number, Quality>;
+  setWayQualities: React.Dispatch<React.SetStateAction<Map<number, Quality>>>;
   followUser: boolean;
   setFollowUser: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -65,9 +66,20 @@ const WayUpdater = ({
       }
       const bounds = map.getBounds();
       const newWays = await fetchWays(bounds);
+      console.log(`Got ${newWays.length} ways`);
+
+      const wayIds = newWays.map((way) => way.id);
+      const wayQualitiesArray = await fetchWayQualities(wayIds);
+      console.log(`Got ${wayQualitiesArray.length} wayQualities`);
+
+      const newWayQualities = new Map<number, Quality>(
+        wayQualitiesArray.map(item => [item.wayId, item.quality])
+      );
+
       setWays(newWays);
+      setWayQualities(newWayQualities);
     }, 500);
-  }, [map, setWays]);
+  }, [map, setWays, setWayQualities]);
 
   useEffect(() => {
     debouncedFetchWays(); // initial fetch
@@ -102,7 +114,11 @@ const WayUpdater = ({
 
     if (closestWayId !== null) {
       console.log(`Setting way ${closestWayId} to ${quality}`);
-      setUserWayIdToQuality(new Map(userWayIdToQuality).set(closestWayId, quality));
+      setWayQualities(new Map(wayQualities).set(closestWayId, quality));
+      storeWayQualities([{
+        wayId: closestWayId,
+        quality,
+      }]);
     }
   };
 
@@ -189,7 +205,7 @@ function qualityToColor(quality: Quality): string {
 
 const MapView = () => {
   const [ways, setWays] = useState<Way[]>(initialWays);
-  const [userWayIdToQuality, setUserWayIdToQuality] = useState(new Map<number, Quality>());
+  const [wayQualities, setWayQualities] = useState(new Map<number, Quality>());
   const [followUser, setFollowUser] = useState(true);
 
   return (
@@ -221,8 +237,8 @@ const MapView = () => {
         <WayUpdater
           ways={ways}
           setWays={setWays}
-          userWayIdToQuality={userWayIdToQuality}
-          setUserWayIdToQuality={setUserWayIdToQuality}
+          wayQualities={wayQualities}
+          setWayQualities={setWayQualities}
           followUser={followUser}
           setFollowUser={setFollowUser}
         />
@@ -233,7 +249,7 @@ const MapView = () => {
             key={way.id}
             positions={way.path}
             pathOptions={{
-              color: qualityToColor(userWayIdToQuality.get(way.id)),
+              color: qualityToColor(wayQualities.get(way.id)),
               weight: 5
             }}
           />
