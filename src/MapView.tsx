@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { latLng, LatLng } from 'leaflet';
 import { Quality, Way } from './types';
 import debounce from 'lodash.debounce';
@@ -56,23 +56,38 @@ const WayUpdater = ({
   const [followUser, setFollowUser] = useState(true);
   const [status, setStatus] = useState('Changes will be stored on a server.');
 
-  const debouncedFetchWays = useMemo(() => {
+  const debouncedFetchWays = useCallback(() => {
     return debounce(async () => {
       if (map.getZoom() < minZoomForWays) {
         setWays([]);
         return;
       }
-      const bounds = map.getBounds();
-      const newWays = await fetchWays(bounds);
-      console.log(`Got ${newWays.length} ways`);
 
-      const wayIds = newWays.map((way) => way.wayId);
-      const wayQualitiesArray = await fetchWayQualities(wayIds);
-      console.log(`Got ${wayQualitiesArray.length} wayQualities`);
+      let newWays;
+      try {
+        const bounds = map.getBounds();
+        newWays = await fetchWays(bounds);
+        console.log(`Got ${newWays.length} ways`);
+      }
+      catch (error) {
+        setStatus(`${error}`);
+        return;
+      }
 
-      const newWayQualities = new Map<number, Quality>(
-        wayQualitiesArray.map(item => [item.wayId, item.quality])
-      );
+      let newWayQualities;
+      try {
+        const wayIds = newWays.map((way) => way.wayId);
+        const wayQualitiesArray = await fetchWayQualities(wayIds);
+        console.log(`Got ${wayQualitiesArray.length} wayQualities`);
+
+        newWayQualities = new Map<number, Quality>(
+          wayQualitiesArray.map(item => [item.wayId, item.quality])
+        );
+      }
+      catch (error) {
+        setStatus(`${error}`);
+        return;
+      }
 
       setWays(newWays);
       setWayQualities(newWayQualities);
@@ -121,7 +136,7 @@ const WayUpdater = ({
         }]);
         setStatus('All changes saved.');
       } catch (error) {
-        setStatus(`Error: ${error}`);
+        setStatus(`${error}`);
       }
     }
   };
