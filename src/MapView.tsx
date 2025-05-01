@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { latLng, LatLng } from 'leaflet';
 import { Quality, Way } from './types';
 import debounce from 'lodash.debounce';
@@ -56,7 +56,7 @@ const WayUpdater = ({
   const [followUser, setFollowUser] = useState(true);
   const [status, setStatus] = useState('Changes will be stored on a server.');
 
-  const debouncedFetchWays = useCallback(() => {
+  const debouncedFetchWays = useMemo(() => {
     return debounce(async () => {
       if (map.getZoom() < minZoomForWays) {
         setWays([]);
