@@ -1,6 +1,5 @@
 import express from 'express';
-import sqlite3 from 'sqlite3';
-import { open, Database } from 'sqlite';
+import { initDb, getDb } from './db';
 import cors from 'cors';
 import { z } from 'zod';
 import pinoHttp from 'pino-http';
@@ -24,29 +23,6 @@ app.use(cors({
     }
   }
 }));
-
-let db: Database<sqlite3.Database, sqlite3.Statement>;
-
-async function initDb(memory = false) {
-  const database = await open({
-    filename: memory ? ':memory:' : '/tmp/way_qualities.db',
-    driver: sqlite3.Database,
-  });
-
-  await database.exec(`
-    CREATE TABLE IF NOT EXISTS way_qualities (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      way_id INTEGER NOT NULL,
-      quality INTEGER NOT NULL,
-      timestamp TEXT NOT NULL,
-      ip TEXT
-    );
-
-    CREATE INDEX IF NOT EXISTS idx_way_timestamp ON way_qualities (way_id, timestamp);
-  `);
-
-  db = database;
-}
 
 const WayQualitiesPutSchema = z.array(
   z.object({
@@ -75,23 +51,21 @@ app.put('/openskatemap/api/way-qualities', async (req, res) => {
     return;
   }
 
-  const stmt = await db.prepare(
-    `INSERT INTO way_qualities (way_id, quality, timestamp, ip)
-     VALUES (?, ?, ?, ?)`
-  );
-
-  try {
-    await db.run('BEGIN');
-    for (const { wayId, quality } of entries) {
-      await stmt.run(wayId, quality, now, ip);
-    }
-    await db.run('COMMIT');
+  const db = getDb();
+   try {
+    await db.transaction(async (trx) => {
+      for (const { wayId, quality } of req.body) {
+        await trx('way_qualities').insert({
+          way_id: wayId,
+          quality,
+          timestamp: now,
+          ip,
+        });
+      }
+    });
     res.sendStatus(204);
   } catch (e) {
-    await db.run('ROLLBACK');
     res.status(500).json({ error: (e as Error).message });
-  } finally {
-    await stmt.finalize();
   }
 });
 
@@ -121,25 +95,38 @@ app.post('/openskatemap/api/way-qualities', async (req, res) => {
     return;
   }
 
-  const placeholders = ids.map(() => '?').join(',');
+  const db = getDb();
+  const results = await db('way_qualities as wq1')
+    .select('wq1.way_id', 'wq1.quality', 'wq1.timestamp')
+    .join(
+      db('way_qualities')
+        .select('way_id')
+        .max('timestamp as max_ts')
+        .whereIn('way_id', ids)
+        .groupBy('way_id')
+        .as('wq2'),
+      function () {
+        this.on('wq1.way_id', '=', 'wq2.way_id')
+            .andOn('wq1.timestamp', '=', 'wq2.max_ts');
+      }
+    );
 
-  const latestRows = await db.all(
-    `SELECT wq1.way_id, wq1.quality, wq1.timestamp
-     FROM way_qualities wq1
-     INNER JOIN (
-       SELECT way_id, MAX(timestamp) AS max_ts
-       FROM way_qualities
-       WHERE way_id IN (${placeholders})
-       GROUP BY way_id
-     ) wq2 ON wq1.way_id = wq2.way_id AND wq1.timestamp = wq2.max_ts`,
-    ids
-  );
-
-  res.json(latestRows.map(row => ({
-    wayId: row.way_id,
-    quality: row.quality,
-    timestamp: row.timestamp
+  res.json(results.map(({ way_id, quality, timestamp }) => ({
+    wayId: way_id,
+    quality,
+    timestamp,
   })));
+});
+
+app.get('/health', async (_, res) => {
+  const db = getDb();
+  try {
+    await db.raw('SELECT 1+1 AS result');
+    res.send('OK');
+  } catch (err) {
+    logger.error(err, 'Health check failed');
+    res.status(500).json({ error: (err as Error).message });
+  }
 });
 
 export { app, initDb };
