@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "welkin-user-demo.fullname" . }}
+  labels:
+    {{- include "welkin-user-demo.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "welkin-user-demo.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "welkin-user-demo.selectorLabels" . | nindent 8 }}
+    spec:
+      automountServiceAccountToken: false
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+          - name: PGHOST
+            valueFrom:
+              secretKeyRef:
+                name: openskatemap-postgresql
+                key: PGHOST
+          - name: PGPORT
+            valueFrom:
+              secretKeyRef:
+                name: openskatemap-postgresql
+                key: PGPORT
+          - name: PGSSLMODE
+            valueFrom:
+              secretKeyRef:
+                name: openskatemap-postgresql
+                key: PGSSLMODE
+          - name: PGUSER
+            valueFrom:
+              secretKeyRef:
+                name: openskatemap-postgresql
+                key: PGUSER
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: openskatemap-postgresql
+                key: PGPASSWORD
+          - name: PGDATABASE
+            valueFrom:
+              secretKeyRef:
+                name: openskatemap-postgresql
+                key: PGDATABASE
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range $c := .Values.topologySpreadConstraints }}
+        - {{- toYaml $c | nindent 10 }}
+          labelSelector:
+            matchLabels:
+              {{- include "welkin-user-demo.selectorLabels" $ | nindent 14 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
