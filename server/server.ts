@@ -142,4 +142,8 @@ app.get('/health', async (_, res) => {
   }
 });
 
+app.get('/version', (req, res) => {
+  res.send(process.env.APP_VERSION || 'unknown');
+});
+
 export { app, initDb };
