@@ -9,5 +9,5 @@ initDb().then(() => {
   });
 }).catch((err: unknown) => {
   logger.error({ err }, 'Failed to initialize the database');
-  process.exit(1);
+  setTimeout(() => process.exit(1), 100);
 });
