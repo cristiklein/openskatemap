@@ -7,14 +7,14 @@
     "dev": "concurrently \"npm:dev:*\"",
     "dev:client": "vite --host",
     "dev:server": "ts-node --project tsconfig.server.json server/start.ts",
-    "start": "node dist/start.js",
     "build": "tsc -b && vite build",
     "build:server": "tsc -p tsconfig.server.json",
     "lint": "eslint .",
     "test": "vitest",
     "preview": "vite preview",
     "predeploy": "(git diff-files --quiet || (echo 'Please ensure workdir is clean.' && exit 1)) && vitest run && npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "start": "echo 'Not implemented. See Dockerfile.'"
   },
   "dependencies": {
     "axios": "^1.9.0",
