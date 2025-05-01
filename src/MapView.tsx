@@ -106,17 +106,17 @@ const WayUpdater = ({
 
   const buttons = [
     {
-      quality: 1,
+      quality: 1 as Quality,
       label: 'Good',
       color: 'green',
     },
     {
-      quality: 0,
+      quality: 0 as Quality,
       label: 'Medium',
       color: 'gold',
     },
     {
-      quality: -1,
+      quality: -1 as Quality,
       label: 'Bad',
       color: 'red',
     },
