@@ -1,34 +1,40 @@
 import { describe, it, expect } from 'vitest';
-import { fetchWayQualities, storeWayQualities } from './wayQualitiesService';
+import { fetchWayQualities, storeWayQualities, WayQuality } from './wayQualitiesService';
 
 describe('wayQualitiesService', () => {
   it('should store', async () => {
     const wayQualities = [
       {
-        id: 0,
+        wayId: 0,
         quality: 1,
       },
       {
-        id: 1,
+        wayId: 1,
         quality: 0,
       },
       {
-        id: 2,
+        wayId: 2,
         quality: -1,
       },
-    ];
+    ] as WayQuality[];
 
     await storeWayQualities(wayQualities);
 
-    const fetchedWayQualities = fetchWayQualities(wayQualities.map((w) => w.id));
-    expect(fetchedWayQualities).toStrictEqual(wayQualities);
+    const wayIds = wayQualities.map((w) => w.wayId);
+    const fetchedWayQualities = await fetchWayQualities(wayIds);
 
-    const f2 = fetchWayQualities([2]);
-    expect(f2).toStrictEqual([
-      {
-        id: 2,
+    const relevantWayQualities = fetchedWayQualities.map(
+      (wq: WayQuality) => ({ wayId: wq.wayId, quality: wq.quality })
+    );
+
+    expect(relevantWayQualities).toStrictEqual(wayQualities);
+
+    const f2 = await fetchWayQualities([2]);
+    expect(f2).toEqual([
+      expect.objectContaining({
+        wayId: 2,
         quality: -1,
-      }
+      })
     ]);
   });
 });
