@@ -7,6 +7,7 @@
     "dev": "concurrently \"npm:dev:*\"",
     "dev:client": "vite --host",
     "dev:server": "ts-node --project tsconfig.server.json server/start.ts",
+    "start": "ts-node --project tsconfig.server.json server/start.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest",

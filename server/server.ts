@@ -29,7 +29,7 @@ let db: Database<sqlite3.Database, sqlite3.Statement>;
 
 async function initDb(memory = false) {
   const database = await open({
-    filename: memory ? ':memory:' : './way_qualities.db',
+    filename: memory ? ':memory:' : '/tmp/way_qualities.db',
     driver: sqlite3.Database,
   });
 
