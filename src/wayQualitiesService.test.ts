@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { fetchWayQualities, storeWayQualities, WayQuality } from './wayQualitiesService';
 
-describe('wayQualitiesService', () => {
+/* Needs npm run dev:server */
+describe.skip('wayQualitiesService', () => {
   it('should store', async () => {
     const wayQualities = [
       {
