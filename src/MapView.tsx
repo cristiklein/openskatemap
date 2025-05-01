@@ -54,6 +54,7 @@ const WayUpdater = ({
 }) => {
   const map = useMap();
   const [followUser, setFollowUser] = useState(true);
+  const [status, setStatus] = useState('Changes will be stored on a server.');
 
   const debouncedFetchWays = useMemo(() => {
     return debounce(async () => {
@@ -86,7 +87,7 @@ const WayUpdater = ({
     }
   }, [map, debouncedFetchWays]);
 
-  const updateClosestWayQuality = (quality: Quality) => {
+  const updateClosestWayQuality = async (quality: Quality) => {
     let closestWayId: number | null = null;
     let closestDistance = Infinity;
 
@@ -112,10 +113,16 @@ const WayUpdater = ({
     if (closestWayId !== null) {
       console.log(`Setting way ${closestWayId} to ${quality}`);
       setWayQualities(new Map(wayQualities).set(closestWayId, quality));
-      storeWayQualities([{
-        wayId: closestWayId,
-        quality,
-      }]);
+      setStatus('Saving ...');
+      try {
+        await storeWayQualities([{
+          wayId: closestWayId,
+          quality,
+        }]);
+        setStatus('All changes saved.');
+      } catch (error) {
+        setStatus(`Error: ${error}`);
+      }
     }
   };
 
@@ -173,7 +180,7 @@ const WayUpdater = ({
             </button>
           ))}
         </div>
-        <div>⚠️ This is just a Proof-of-Concept.<br/>Your marks WILL NOT be saved.</div>
+        <div>{ status }</div>
       </>
     )}
       <div><label><input
