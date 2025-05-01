@@ -46,17 +46,14 @@ const WayUpdater = ({
   setWays,
   wayQualities,
   setWayQualities,
-  followUser,
-  setFollowUser,
 }: {
   ways: Way[];
   setWays: React.Dispatch<React.SetStateAction<Way[]>>;
   wayQualities: Map<number, Quality>;
   setWayQualities: React.Dispatch<React.SetStateAction<Map<number, Quality>>>;
-  followUser: boolean;
-  setFollowUser: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const map = useMap();
+  const [followUser, setFollowUser] = useState(true);
 
   const debouncedFetchWays = useMemo(() => {
     return debounce(async () => {
@@ -154,6 +151,7 @@ const WayUpdater = ({
       gridAutoColumns: '1fr',
       gap: 5,
     }}>
+      {followUser && <UserLocationTracker />}
       { map.getZoom() < minZoomForWays || ways.length > MAX_WAYS ? (
         <div>Zoom in to see and mark asphalt quality.</div>
       ) : (
@@ -206,7 +204,6 @@ function qualityToColor(quality: Quality): string {
 const MapView = () => {
   const [ways, setWays] = useState<Way[]>(initialWays);
   const [wayQualities, setWayQualities] = useState(new Map<number, Quality>());
-  const [followUser, setFollowUser] = useState(true);
 
   return (
     <div style={{ height: '100vh', width: '100%' }}>
@@ -239,8 +236,6 @@ const MapView = () => {
           setWays={setWays}
           wayQualities={wayQualities}
           setWayQualities={setWayQualities}
-          followUser={followUser}
-          setFollowUser={setFollowUser}
         />
 
         {/* Draw all ways */}
@@ -254,7 +249,6 @@ const MapView = () => {
             }}
           />
         ))}
-        {followUser && <UserLocationTracker />}
       </MapContainer>
       <div style={{
         position: 'absolute',
