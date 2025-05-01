@@ -2,7 +2,7 @@ import knex, { Knex } from 'knex';
 
 let db: Knex;
 
-export async function initDb(inMemory: boolean): Promise<Knex> {
+export async function initDb(inMemory: boolean = false): Promise<Knex> {
   const isProd = process.env.NODE_ENV === 'production';
 
   db = knex({
