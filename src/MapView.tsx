@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet';
 import { useEffect, useMemo, useState } from 'react';
 import { latLng, LatLng } from 'leaflet';
 import { Quality, Way } from './types';
-import throttle from 'lodash.throttle';
+import debounce from 'lodash.debounce';
 import fetchWays from './fetchWays';
 import { fetchWayQualities, storeWayQualities } from './wayQualitiesService';
 import UserLocationTracker from './UserLocationTracker';
@@ -56,8 +56,8 @@ const WayUpdater = ({
   const [followUser, setFollowUser] = useState(true);
   const [status, setStatus] = useState('Changes will be stored on a server.');
 
-  const throttledFetchWays = useMemo(() => {
-    return throttle(async () => {
+  const debouncedFetchWays = useMemo(() => {
+    return debounce(async () => {
       if (map.getZoom() < minZoomForWays) {
         setWays([]);
         return;
@@ -95,12 +95,12 @@ const WayUpdater = ({
   }, [map, setWays, setWayQualities]);
 
   useEffect(() => {
-    throttledFetchWays(); // initial fetch
-    map.on('moveend', throttledFetchWays)
+    debouncedFetchWays(); // initial fetch
+    map.on('moveend', debouncedFetchWays)
     return () => {
-      map.off('moveend', throttledFetchWays)
+      map.off('moveend', debouncedFetchWays)
     }
-  }, [map, throttledFetchWays]);
+  }, [map, debouncedFetchWays]);
 
   const updateClosestWayQuality = async (quality: Quality) => {
     let closestWayId: number | null = null;
