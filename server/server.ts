@@ -8,6 +8,7 @@ import logger from './logger';
 const app: express.Application = express();
 app.use(express.json());
 app.use(pinoHttp({ logger }));
+app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
 
 const allowedOrigins = [
   'http://localhost:5173',
