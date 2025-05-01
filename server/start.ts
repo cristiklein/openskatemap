@@ -1,6 +1,8 @@
 import { app, initDb } from './server';
 import logger from './logger';
 
+logger.info('Starting ...');
+
 const PORT = process.env.PORT || 3000;
 
 async function main() {

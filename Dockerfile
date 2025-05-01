@@ -1,23 +1,23 @@
-FROM node:23-slim
+# Stage 1: Build
+FROM node:23 AS build
 
-# Setup dependencies
-RUN npm install -g ts-node
-USER 1000
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm ci
 
-# Build
-COPY . .
+COPY tsconfig*.json ./
+COPY server ./server
+RUN npm run build:server
 
-# Test
-RUN \
-  npm run dev:server & \
-  sleep 1 && \
-  npm run test && \
-  ls -l /tmp
+# Stage 2: Production
+FROM node:23-slim
 
-# Run
+WORKDIR /app
+COPY --from=build /app/dist/server ./dist/server
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+USER 1000
 ENV NODE_ENV=production
 EXPOSE 3000
-CMD ["ts-node", "--project", "tsconfig.server.json", "server/start.ts"]
+CMD ["node", "dist/server/start.js"]
