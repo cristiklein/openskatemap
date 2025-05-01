@@ -47,3 +47,8 @@ export function getDb(): Knex {
   if (!db) throw new Error('Database not initialized');
   return db;
 }
+
+export async function deinitDb() {
+  if (!db) throw new Error('Database not initialized');
+  await db.destroy();
+}
