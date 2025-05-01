@@ -1,6 +1,7 @@
 FROM node:23-slim
 
 # Setup dependencies
+RUN npm install -g ts-node
 USER 1000
 WORKDIR /app
 COPY package.json package-lock.json ./
@@ -18,7 +19,5 @@ RUN \
 
 # Run
 ENV NODE_ENV=production
-ENV NPM_CONFIG_LOGLEVEL=info
-ENV NPM_CONFIG_LOGSTREAM=stdout
 EXPOSE 3000
-CMD ["npm", "start" ]
+CMD ["ts-node", "--project", "tsconfig.server.json", "server/start.ts"]
