@@ -2,7 +2,7 @@ import knex, { Knex } from 'knex';
 
 let db: Knex;
 
-export async function initDb(): Promise<Knex> {
+export async function initDb(inMemory: boolean): Promise<Knex> {
   const isProd = process.env.NODE_ENV === 'production';
 
   db = knex({
@@ -17,7 +17,7 @@ export async function initDb(): Promise<Knex> {
           database: process.env.PGDATABASE,
         }
       : {
-          filename: '/tmp/openskatemap.sqlite',
+          filename: inMemory ? ':memory:' : '/tmp/openskatemap.sqlite',
         },
     useNullAsDefault: !isProd,
   });
