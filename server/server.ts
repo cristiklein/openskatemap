@@ -98,7 +98,7 @@ app.put('/openskatemap/api/way-qualities', async (req, res) => {
 const WayQualitiesPostSchema = z.array(
   z.number().int().nonnegative(),
 );
-const MAX_IDS = 100;
+const MAX_IDS = 1000;
 
 app.post('/openskatemap/api/way-qualities', async (req, res) => {
   const result = WayQualitiesPostSchema.safeParse(req.body);
