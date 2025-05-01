@@ -67,6 +67,11 @@ app.put('/openskatemap/api/way-qualities', async (req, res) => {
   const ip = req.ip;
   const now = new Date().toISOString();
 
+  if (entries.length > MAX_IDS) {
+    res.status(400).json({ error: `Too many entities (max ${MAX_IDS})` });
+    return;
+  }
+
   const stmt = await db.prepare(
     `INSERT INTO way_qualities (way_id, quality, timestamp, ip)
      VALUES (?, ?, ?, ?)`
