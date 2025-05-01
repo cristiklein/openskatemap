@@ -11,7 +11,9 @@ export async function initDb(inMemory: boolean = false): Promise<Knex> {
       ? {
           host: process.env.PGHOST,
           port: Number(process.env.PGPORT || 5432),
-          ssl: process.env.PGSSLMODE === 'require',
+          ssl: {
+            rejectUnauthorized: false,
+          },
           user: process.env.PGUSER,
           password: process.env.PGPASSWORD,
           database: process.env.PGDATABASE,
