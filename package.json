@@ -2,7 +2,7 @@
   "name": "openskatemap",
   "homepage": "https://cristiklein.github.io/openstakemap/",
   "private": true,
-  "version": "0.12.0",
+  "version": "0.13.0",
   "scripts": {
     "dev": "concurrently \"npm:dev:*\"",
     "dev:client": "vite --host",
