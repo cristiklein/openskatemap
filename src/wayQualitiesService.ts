@@ -7,7 +7,7 @@ export interface WayQuality {
   timestamp?: string;
 }
 
-export async function fetchWayQualities(wayIds: number[]): WayQualities[] {
+export async function fetchWayQualities(wayIds: number[]): Promise<WayQuality[]> {
   const url = `${import.meta.env.VITE_API_BASE_URL}/openskatemap/api/way-qualities`;
 
   try {
