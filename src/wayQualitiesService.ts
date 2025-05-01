@@ -7,14 +7,24 @@ export interface WayQuality {
   timestamp?: string;
 }
 
-export async function fetchWayQualities(wayIds: number[]) {
+export async function fetchWayQualities(wayIds: number[]): WayQualities[] {
   const url = `${import.meta.env.VITE_API_BASE_URL}/openskatemap/api/way-qualities`;
 
-  const response = await axios.post(url, wayIds, {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  try {
+    const response = await axios.post(url, wayIds, {
+      headers: { 'Content-Type': 'application/json' },
+    });
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Request failed with status:', error.response?.status);
+      console.error('Response data:', error.response?.data);
+    } else {
+      console.error('Unexpected error:', error);
+    }
+    throw error;
+  }
 }
 
 export async function storeWayQualities(wq: WayQuality[]) {
