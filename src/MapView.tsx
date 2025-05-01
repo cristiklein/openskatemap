@@ -7,6 +7,8 @@ import fetchWays from './fetchWays';
 import UserLocationTracker from './UserLocationTracker';
 import { getDistanceToLineSegment } from './utils';
 
+const MAX_WAYS = 1000; // imposed server-side
+
 const center: LatLng = latLng([55.60249267294951, 12.967599313254912]);
 
 const initialWays: Way[] = [
@@ -36,7 +38,7 @@ const initialWays: Way[] = [
   },
 ];
 
-const minZoomForWays = 14;
+const minZoomForWays = 15;
 
 const WayUpdater = ({
   ways,
@@ -136,7 +138,7 @@ const WayUpdater = ({
       gridAutoColumns: '1fr',
       gap: 5,
     }}>
-      { map.getZoom() < minZoomForWays ? (
+      { map.getZoom() < minZoomForWays || ways.length > MAX_WAYS ? (
         <div>Zoom in to see and mark asphalt quality.</div>
       ) : (
         <>
