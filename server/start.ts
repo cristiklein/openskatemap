@@ -9,8 +9,16 @@ async function main() {
   try {
     await initDb();
 
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       logger.info(`Server listening on port ${PORT}`);
+    });
+
+    process.on('SIGTERM', async () => {
+      logger.info('SIGTERM received, shutting down...');
+      server.close(() => {
+        logger.info('HTTP server closed.');
+        process.exit(0);
+      });
     });
   } catch (err) {
     logger.error({ err }, 'Failed to start the server');
