@@ -3,9 +3,12 @@ import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
 import cors from 'cors';
 import { z } from 'zod';
+import pinoHttp from 'pino-http';
+import logger from './logger';
 
 const app: express.Application = express();
 app.use(express.json());
+app.use(pinoHttp({ logger }));
 
 const allowedOrigins = [
   'http://localhost:5173',
