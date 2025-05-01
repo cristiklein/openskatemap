@@ -14,7 +14,7 @@ const center: LatLng = latLng([55.60249267294951, 12.967599313254912]);
 
 const initialWays: Way[] = [
   {
-    id: 1,
+    wayId: 1,
     path: [
       latLng([55.6025, 12.9675]),
       latLng([55.6030, 12.9678]),
@@ -22,7 +22,7 @@ const initialWays: Way[] = [
     quality: -1,
   },
   {
-    id: 2,
+    wayId: 2,
     path: [
       latLng([55.6020, 12.9670]),
       latLng([55.6023, 12.9674]),
@@ -30,7 +30,7 @@ const initialWays: Way[] = [
     quality: 0,
   },
   {
-    id: 3,
+    wayId: 3,
     path: [
       latLng([55.6015, 12.9665]),
       latLng([55.6018, 12.9670]),
@@ -65,7 +65,7 @@ const WayUpdater = ({
       const newWays = await fetchWays(bounds);
       console.log(`Got ${newWays.length} ways`);
 
-      const wayIds = newWays.map((way) => way.id);
+      const wayIds = newWays.map((way) => way.wayId);
       const wayQualitiesArray = await fetchWayQualities(wayIds);
       console.log(`Got ${wayQualitiesArray.length} wayQualities`);
 
@@ -104,7 +104,7 @@ const WayUpdater = ({
 
         if (distance < closestDistance) {
           closestDistance = distance;
-          closestWayId = way.id;
+          closestWayId = way.wayId;
         }
       }
     });
@@ -241,10 +241,10 @@ const MapView = () => {
         {/* Draw all ways */}
         {ways.map((way) => (
           <Polyline
-            key={way.id}
+            key={way.wayId}
             positions={way.path}
             pathOptions={{
-              color: qualityToColor(wayQualities.get(way.id)),
+              color: qualityToColor(wayQualities.get(way.wayId)),
               weight: 5
             }}
           />

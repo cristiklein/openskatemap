@@ -17,7 +17,7 @@ describe('fetchWays', () => {
     const ways = await fetchWays(bounds);
 
     expect(ways.length).toBe(38);
-    expect(ways[0].id).toBe(60468726);
+    expect(ways[0].wayId).toBe(60468726);
     expect(ways[0].path[0]).toStrictEqual(L.latLng(55.6691438, 13.0744193));
     expect(ways[0].path).toStrictEqual([
       {

@@ -39,7 +39,7 @@ export default async function fetchWays(
     .filter((el: any) => el.type === 'way' && el.geometry)
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     .map((way: any) => ({
-      id: way.id,
+      wayId: way.id,
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       path: way.geometry.map((g: any) => latLng(g.lat, g.lon)),
     }));
