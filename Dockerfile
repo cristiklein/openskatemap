@@ -10,7 +10,7 @@ COPY server ./server
 RUN npm run build:server
 
 # Stage 2: Production
-FROM node:23-slim
+FROM node:23-alpine
 
 ARG APP_VERSION
 
