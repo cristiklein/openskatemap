@@ -16,6 +16,7 @@ ARG APP_VERSION
 
 WORKDIR /app
 COPY --from=build /app/dist-server/ /app/dist-server/
+COPY server/migrations/ /app/server/migrations/
 COPY package*.json ./
 RUN npm ci --omit=dev
 
