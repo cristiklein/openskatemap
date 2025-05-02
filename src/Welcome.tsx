@@ -2,21 +2,43 @@ import { useState } from 'react';
 
 const SEEN_KEY = "seenWelcome";
 
-const Welcome = () => {
-  const [ seen, setSeen ] = useState(() => {
-    const storedSeen = localStorage.getItem(SEEN_KEY);
-    return storedSeen ? parseInt(storedSeen, 10) : 0
-  });
+type HelpButtonProps = {
+  handleHelp: () => void;
+};
 
-  const handleStart = () => {
-    const newSeen = Date.now();
-    setSeen(newSeen);
-    localStorage.setItem(SEEN_KEY, newSeen.toString());
-  };
+const HelpButton: React.FC<HelpButtonProps> = ({ handleHelp }) => {
+  return (
+    <div style={{
+      position: "absolute",
+      zIndex: 2000,
+      left: 10,
+      bottom: 24,
+      borderRadius: 2,
+      border: '2px solid rgba(0,0,0,0.2)',
+    }}>
+      <a href="#" onClick={handleHelp} style={{
+        backgroundColor: '#fff',
+        color: 'black',
+        cursor: 'pointer',
+        width: '30px',
+        height: '30px',
+        lineHeight: '30px',
+        fontSize: '22px',
+        display: 'block',
+        fontFamily: "'Lucida Console', Monaco, monospace",
+        fontWeight: '700',
+        textAlign: 'center',
+        textDecoration: 'none',
+      }}><span aria-hidden="true">?</span></a>
+    </div>
+  );
+}
 
-  if (seen) {
-    return null;
-  }
+type WelcomeOverlayProps = {
+  handleStart: () => void;
+};
+
+const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({ handleStart }) => {
   return (
     <div style={{
       position: "absolute",
@@ -83,6 +105,30 @@ const Welcome = () => {
       </div>
       </div>
     </div>
+  );
+}
+
+const Welcome = () => {
+  const [ seen, setSeen ] = useState(() => {
+    const storedSeen = localStorage.getItem(SEEN_KEY);
+    return storedSeen ? parseInt(storedSeen, 10) : 0
+  });
+
+  const handleStart = () => {
+    const newSeen = Date.now();
+    setSeen(newSeen);
+    localStorage.setItem(SEEN_KEY, newSeen.toString());
+  };
+
+  const handleHelp = () => {
+    setSeen(0);
+  };
+
+  return (
+    <>
+      <HelpButton handleHelp={handleHelp} />
+      { seen ? '' : (<WelcomeOverlay handleStart={handleStart} />) }
+    </>
   );
 };
 
