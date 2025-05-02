@@ -96,9 +96,11 @@ const WayUpdater = ({
 
   useEffect(() => {
     debouncedFetchWays(); // initial fetch
-    map.on('moveend', debouncedFetchWays)
+    map.on('move', debouncedFetchWays)
+    map.on('zoom', debouncedFetchWays)
     return () => {
-      map.off('moveend', debouncedFetchWays)
+      map.off('move', debouncedFetchWays)
+      map.off('zoom', debouncedFetchWays)
     }
   }, [map, debouncedFetchWays]);
 
