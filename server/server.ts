@@ -25,6 +25,7 @@ app.use(metricsMiddleware);
 const allowedOrigins = [
   'http://localhost:5173',
   'https://cristiklein.github.io',
+  'https://openskatemap.se',
 ];
 
 app.use(cors({
