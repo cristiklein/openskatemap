@@ -109,6 +109,8 @@ const WayUpdater = ({
     let closestDistance = Infinity;
 
     const centerLatLng = map.getCenter();
+    const latitude = centerLatLng.lat;
+    const longitude = centerLatLng.lng;
 
     ways.forEach((way) => {
       for (let i = 0; i < way.path.length - 1; i++) {
@@ -135,6 +137,8 @@ const WayUpdater = ({
         await storeWayQualities([{
           wayId: closestWayId,
           quality,
+          latitude,
+          longitude,
         }]);
         setStatus('All changes saved.');
       } catch (error) {

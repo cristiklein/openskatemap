@@ -5,6 +5,8 @@ export interface WayQuality {
   wayId: number;
   quality: Quality;
   timestamp?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export async function fetchWayQualities(wayIds: number[]): Promise<WayQuality[]> {
