@@ -42,7 +42,7 @@ const Welcome = () => {
           <button style={{fontSize: 'x-small'}} onClick={handleStart}>Close tutorial</button>
         </div>
         <div style={{
-          overflow: 'y-scroll',
+          overflowY: 'scroll',
           height: 'calc(100% - 20px)',
           width: '100%',
         }}>
@@ -72,6 +72,10 @@ const Welcome = () => {
         </ol>
 
         <h2>What's new?</h2>
+        <h3>Version 0.27.0</h3>
+        <ul>
+          <li>Fix: OpenStreetMap attribution is visible</li>
+        </ul>
         <h3>Version 0.26.0</h3>
         <ul>
           <li>Added welcome screen</li>

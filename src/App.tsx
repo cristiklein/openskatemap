@@ -4,7 +4,7 @@ import Welcome from './Welcome';
 
 function App() {
   return (
-    <div style={{ height: "100vh" }}>
+    <div style={{ height: "100%" }}>
       <Welcome />
       <MapView />
     </div>
