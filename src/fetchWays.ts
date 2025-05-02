@@ -14,15 +14,11 @@ export default async function fetchWays(
   const query = `
     [out:json][timeout:25];
     (
-      way["highway"="cycleway"](${bbox});
-      way["bicycle"="designated"](${bbox});
-      way["cycleway"="shared_lane"](${bbox});
-      way["cycleway"="lane"](${bbox});
-      way["cycleway:left"](${bbox});
-      way["cycleway:right"](${bbox});
+      way["highway"="cycleway"]({{bbox}});
+      way["bicycle"="designated"]({{bbox}});
     );
     out geom;
-  `;
+  `.replaceAll('{{bbox}}', bbox);
 
   console.log(`Fetching ${query}`);
 
