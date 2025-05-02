@@ -8,4 +8,5 @@ export default defineConfig({
   outDir: 'dist-server',
   clean: true,
   sourcemap: true,
+  minify: true,
 });
