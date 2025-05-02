@@ -4,7 +4,7 @@ import request from 'supertest';
 import { app, initDb } from './server';
 
 beforeAll(async () => {
-  await initDb(true); // true means "in memory"
+  await initDb();
 });
 
 describe('Way Qualities API store', () => {
