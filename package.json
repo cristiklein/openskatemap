@@ -3,7 +3,7 @@
   "homepage": "https://cristiklein.github.io/openstakemap/",
   "private": true,
   "type": "module",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "scripts": {
     "dev": "concurrently \"npm:dev:*\"",
     "dev:client": "vite --host",
