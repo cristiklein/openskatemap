@@ -15,7 +15,7 @@
     "test": "vitest",
     "test:container": "docker build -t blah . && docker run --rm blah; echo 'If successful, you should see connect ECONNREFUSED 127.0.0.1:5432'",
     "predeploy": "(git diff-files --quiet || (echo 'Please ensure workdir is clean.' && exit 1)) && vitest run && npm run build:client",
-    "deploy": "gh-pages -d dist",
+    "deploy": "gh-pages -d dist --cname openskatemap.se",
     "start": "echo 'Not implemented. See Dockerfile.'"
   },
   "dependencies": {
