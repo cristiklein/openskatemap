@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-COPY tsconfig*.json ./
+COPY tsconfig*.json tsup*.ts ./
 COPY server ./server
 RUN npm run build:server
 
@@ -15,7 +15,7 @@ FROM node:23-alpine
 ARG APP_VERSION
 
 WORKDIR /app
-COPY --from=build /app/dist/server ./dist/server
+COPY --from=build /app/dist-server/ /app/dist-server/
 COPY package*.json ./
 RUN npm ci --omit=dev
 
@@ -23,4 +23,4 @@ USER 1000
 ENV NODE_ENV=production
 ENV APP_VERSION=$APP_VERSION
 EXPOSE 3000
-CMD ["node", "dist/server/start.js"]
+CMD ["node", "dist-server/start.cjs"]

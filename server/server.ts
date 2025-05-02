@@ -142,7 +142,7 @@ app.get('/health', async (_, res) => {
   }
 });
 
-app.get('/version', (req, res) => {
+app.get('/version', (_, res) => {
   res.send(process.env.APP_VERSION || 'unknown');
 });
 
