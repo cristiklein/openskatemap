@@ -1,8 +1,9 @@
 import knex, { Knex } from 'knex';
-import knexConfig from './knexfile';
+import untypedKnexConfig from './knexfile';
 import logger from './logger';
 
 let db: Knex;
+const knexConfig = untypedKnexConfig as Knex.Config;
 
 export async function initDb(): Promise<Knex> {
   db = knex(knexConfig);
