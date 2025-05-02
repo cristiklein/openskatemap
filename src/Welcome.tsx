@@ -102,6 +102,13 @@ const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({ handleStart }) => {
         <ul>
           <li>Added welcome screen</li>
         </ul>
+
+        <h2>Need Help?</h2>
+        <p>If you run into issues or have questions:</p>
+        <ul>
+          <li>Report bugs or suggest features on <a href="https://github.com/cristiklein/openskatemap" target="_blank" data-external>GitHub</a></li>
+          <li>Or reach out directly at <a href="mailto:cristiklein@gmail.com" target="_blank">cristiklein@gmail.com</a></li>
+        </ul>
       </div>
       </div>
     </div>
