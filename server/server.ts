@@ -42,6 +42,8 @@ const WayQualitiesPutSchema = z.array(
   z.object({
     wayId: z.number().int().nonnegative(),
     quality: z.number().int(),
+    latitude: z.number().optional(),
+    longitude: z.number().optional(),
   }),
 );
 
@@ -68,12 +70,14 @@ app.put('/openskatemap/api/way-qualities', async (req, res) => {
   const db = getDb();
    try {
     await db.transaction(async (trx) => {
-      for (const { wayId, quality } of req.body) {
+      for (const { wayId, quality, latitude, longitude } of entries) {
         await trx('way_qualities').insert({
           way_id: wayId,
           quality,
           timestamp: now,
           ip,
+          latitude,
+          longitude,
         });
       }
     });
@@ -111,7 +115,13 @@ app.post('/openskatemap/api/way-qualities', async (req, res) => {
 
   const db = getDb();
   const results = await db('way_qualities as wq1')
-    .select('wq1.way_id', 'wq1.quality', 'wq1.timestamp')
+    .select(
+      'wq1.way_id',
+      'wq1.quality',
+      'wq1.timestamp',
+      'wq1.latitude',
+      'wq1.longitude',
+    )
     .join(
       db('way_qualities')
         .select('way_id')
@@ -125,10 +135,12 @@ app.post('/openskatemap/api/way-qualities', async (req, res) => {
       }
     );
 
-  res.json(results.map(({ way_id, quality, timestamp }) => ({
+  res.json(results.map(({ way_id, quality, timestamp, latitude, longitude }) => ({
     wayId: way_id,
     quality,
     timestamp,
+    latitude,
+    longitude,
   })));
 });
 
