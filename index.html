@@ -49,7 +49,16 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="welcome-fallback" style="max-width: 900px">
+         <%- welcomeContent %>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
+    <noscript>
+      <div style="color: red; text-align: center; padding: 1em;">
+        This application requires JavaScript to run properly. Please enable JavaScript in your browser settings.
+      </div>
+    </noscript>
   </body>
 </html>

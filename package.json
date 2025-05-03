@@ -65,6 +65,7 @@
     "typescript-eslint": "^8.26.1",
     "vite": "^6.3.4",
     "vite-node": "^3.1.2",
+    "vite-plugin-html": "^3.2.2",
     "vite-plugin-pwa": "^1.0.0",
     "vitest": "^3.1.2"
   }
