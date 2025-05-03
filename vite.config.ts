@@ -6,7 +6,7 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-const welcomeHtml = readFileSync(resolve(__dirname, 'src/welcome.html'), 'utf-8');
+const welcomeHtml = readFileSync(resolve(__dirname, 'public/welcome.html'), 'utf-8');
 
 // https://vite.dev/config/
 export default defineConfig({
