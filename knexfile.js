@@ -1,1 +1,1 @@
-/home/cklein/personal/openskatemap/server/knexfile.js
+server/knexfile.js
