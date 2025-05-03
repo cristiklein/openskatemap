@@ -1,0 +1,28 @@
+---
+name: Link Checker
+
+'on':
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * 1-5'  # At 08:00 UTC on Monday–Friday
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install linkchecker
+        run: pip install linkchecker
+
+      - name: Run linkchecker
+        run: linkchecker https://openskatemap.se/
