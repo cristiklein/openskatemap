@@ -1,4 +1,5 @@
 [![pages-build-deployment](https://github.com/cristiklein/openskatemap/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/cristiklein/openskatemap/actions/workflows/pages/pages-build-deployment)
+[![Link Checker](https://github.com/cristiklein/openskatemap/actions/workflows/linkchecker.yml/badge.svg)](https://github.com/cristiklein/openskatemap/actions/workflows/linkchecker.yml)
 
 # Open Skate Map
 

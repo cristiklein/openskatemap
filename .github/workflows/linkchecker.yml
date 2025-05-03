@@ -25,4 +25,4 @@ jobs:
         run: pip install linkchecker
 
       - name: Run linkchecker
-        run: linkchecker https://openskatemap.se/
+        run: linkchecker --verbose https://openskatemap.se/
