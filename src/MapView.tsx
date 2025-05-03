@@ -55,6 +55,7 @@ const WayUpdater = ({
   const map = useMap();
   const [followUser, setFollowUser] = useState(true);
   const [status, setStatus] = useState('Changes will be stored on a server.');
+  const [error, setError] = useState('');
 
   const debouncedFetchWays = useMemo(() => {
     return debounce(async () => {
@@ -63,34 +64,30 @@ const WayUpdater = ({
         return;
       }
 
-      let newWays;
       try {
         const bounds = map.getBounds();
-        newWays = await fetchWays(bounds);
+        const newWays = await fetchWays(bounds);
         console.log(`Got ${newWays.length} ways`);
-      }
-      catch (error) {
-        setStatus(`${error}`);
-        return;
-      }
 
-      let newWayQualities;
-      try {
         const wayIds = newWays.map((way) => way.wayId);
         const wayQualitiesArray = await fetchWayQualities(wayIds);
         console.log(`Got ${wayQualitiesArray.length} wayQualities`);
 
-        newWayQualities = new Map<number, Quality>(
+        const newWayQualities = new Map<number, Quality>(
           wayQualitiesArray.map(item => [item.wayId, item.quality])
         );
+
+        setWays(newWays);
+        setWayQualities(newWayQualities);
+        setError('');
       }
       catch (error) {
-        setStatus(`${error}`);
-        return;
+        console.error(error);
+        if (error instanceof Error)
+          setError(`${error.message}`);
+        else
+          setError(`${error}`);
       }
-
-      setWays(newWays);
-      setWayQualities(newWayQualities);
     }, 500);
   }, [map, setWays, setWayQualities]);
 
@@ -142,7 +139,8 @@ const WayUpdater = ({
         }]);
         setStatus('All changes saved.');
       } catch (error) {
-        setStatus(`${error}`);
+        console.error(error);
+        setStatus('Could not save changes. Please try again later.');
       }
     }
   };
@@ -202,6 +200,7 @@ const WayUpdater = ({
           ))}
         </div>
         <div>{ status }</div>
+        { error ? (<div style={{ maxWidth: 250, color: "red" }}>{ error }</div>) : '' }
       </>
     )}
       <div><label><input

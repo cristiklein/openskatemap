@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import L from 'leaflet';
 import fetchWays from './fetchWays';
+import axios, { AxiosError } from 'axios';
 
 describe('fetchWays', () => {
   it('should retrieve expected cycleways', async () => {
@@ -69,5 +70,27 @@ describe('fetchWays', () => {
         "lng": 13.075107,
       },
     ]);
+  });
+
+  it('should throw a friendly network error', async () => {
+    const south = 55.66879962984757;
+    const west = 13.073666095733644;
+    const north = 55.676870569996126;
+    const east = 13.081712722778322;
+
+    const bounds = L.latLngBounds(
+      L.latLng(south, west),
+      L.latLng(north, east)
+    );
+
+    vi.spyOn(axios, 'post').mockRejectedValue(new AxiosError('Network Error'));
+
+    await expect(fetchWays(bounds)).rejects.toThrow('No internet connection. Please check your network and try again.');
+
+    expect(axios.post).toHaveBeenCalledWith(
+      'https://overpass-api.de/api/interpreter',
+      expect.anything(),
+      expect.anything(),
+    );
   });
 });
