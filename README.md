@@ -1,3 +1,5 @@
+[![pages-build-deployment](https://github.com/cristiklein/openskatemap/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/cristiklein/openskatemap/actions/workflows/pages/pages-build-deployment)
+
 # Open Skate Map
 
 _Tagline: Help inline skaters find good asphalt._
