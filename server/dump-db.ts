@@ -5,7 +5,7 @@ async function main() {
 
   const db = getDb();
   const results = await db('way_qualities').select('*');
-  console.log(results);
+  console.log(JSON.stringify(results, null, 2)); // Pretty-print JSON to stdout
 
   await deinitDb();
 }
