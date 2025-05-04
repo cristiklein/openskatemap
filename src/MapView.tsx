@@ -149,7 +149,7 @@ const WayUpdater = ({
     {
       quality: 1 as Quality,
       label: 'Good',
-      color: 'green',
+      color: 'lime',
     },
     {
       quality: 0 as Quality,
@@ -190,7 +190,7 @@ const WayUpdater = ({
               onClick={() => updateClosestWayQuality(btn.quality)}
               style={{
                 background: btn.color,
-                color: 'white',
+                color: 'black',
                 marginRight: '5px',
                 minWidth: '64px',
               }}
@@ -218,7 +218,7 @@ const WayUpdater = ({
 function qualityToColor(quality: Quality): string {
   switch (quality) {
     case 1:
-      return 'green';
+      return 'lime';
     case 0:
       return 'gold';
     case -1:
