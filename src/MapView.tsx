@@ -161,6 +161,11 @@ const WayUpdater = ({
       label: 'Bad',
       color: 'red',
     },
+    {
+      quality: undefined as Quality,
+      label: 'Reset',
+      color: 'lightgrey',
+    },
   ]
 
   return (

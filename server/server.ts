@@ -41,7 +41,7 @@ app.use(cors({
 const WayQualitiesPutSchema = z.array(
   z.object({
     wayId: z.number().int().nonnegative(),
-    quality: z.number().int(),
+    quality: z.number().int().optional(),
     latitude: z.number().optional(),
     longitude: z.number().optional(),
   }),

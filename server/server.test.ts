@@ -92,4 +92,32 @@ describe('Way Qualities API store', () => {
       )
     ]);
   });
+
+  it('should accept PUT to reset quality', async () => {
+    const res = await request(app)
+      .put('/openskatemap/api/way-qualities')
+      .send([
+        { wayId: 212345, quality: undefined },
+      ])
+      .set('Content-Type', 'application/json');
+
+    expect(res.statusCode).toBe(204);
+  });
+
+  it('should accept POST and return reset quality', async () => {
+    const res = await request(app)
+      .post('/openskatemap/api/way-qualities')
+      .send([212345])
+      .set('Content-Type', 'application/json');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual([
+      expect.objectContaining(
+        {
+          wayId: 212345,
+          quality: null,
+        }
+      ),
+    ]);
+  });
 });
