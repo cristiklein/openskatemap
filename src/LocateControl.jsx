@@ -1,23 +1,33 @@
 import { useMap } from 'react-leaflet';
 import { useEffect } from 'react';
 
-import { LocateControl as LC } from "leaflet.locatecontrol";
-import "leaflet.locatecontrol/dist/L.Control.Locate.min.css";
+import('leaflet.locatecontrol/dist/L.Control.Locate.min.css');
+
+let LC = null;
+try {
+  const locatecontrol = await import('leaflet.locatecontrol');
+  LC = locatecontrol.LocateControl;
+}
+catch (error) {
+  console.error('Could not load leaflet.locatecontrol');
+}
 
 function LocateControl({ options }) {
   const map = useMap();
 
-  useEffect(() => {
-    const locateControl = new LC({
-      keepCurrentZoomLevel: true,
-      ...options,
-    })
-    locateControl.addTo(map);
+  if (LC) {
+    useEffect(() => {
+      const locateControl = new LC({
+        keepCurrentZoomLevel: true,
+        ...options,
+      })
+      locateControl.addTo(map);
 
-    return () => {
-      map.removeControl(locateControl);
-    };
-  }, [map, options]);
+      return () => {
+        map.removeControl(locateControl);
+      };
+    }, [map, options]);
+  }
 
   return null;
 }
