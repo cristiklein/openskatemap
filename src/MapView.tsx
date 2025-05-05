@@ -55,7 +55,6 @@ const WayUpdater = ({
   setWayQualities: React.Dispatch<React.SetStateAction<Map<number, Quality>>>;
 }) => {
   const map = useMap();
-  const [followUser, setFollowUser] = useState(true);
   const [status, setStatus] = useState('Changes will be stored on a server.');
   const [error, setError] = useState('');
 
@@ -210,14 +209,6 @@ const WayUpdater = ({
         { error ? (<div style={{ maxWidth: 250, color: "red" }}>{ error }</div>) : '' }
       </>
     )}
-      <div><label><input
-        type="checkbox"
-        name="follow-user"
-        checked={followUser}
-        onChange={(e) => setFollowUser(e.target.checked)}
-      />
-        Center map on my location
-      </label></div>
     </div>
   );
 };
