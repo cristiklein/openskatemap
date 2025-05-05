@@ -5,8 +5,10 @@ import { Quality, Way } from './types';
 import debounce from 'lodash.debounce';
 import fetchWays from './fetchWays';
 import { fetchWayQualities, storeWayQualities } from './wayQualitiesService';
-import UserLocationTracker from './UserLocationTracker';
 import { getDistanceToLineSegment } from './utils';
+
+// @ts-expect-error: LocateControl is a JS file without types
+import LocateControl from './LocateControl';
 
 const MAX_WAYS = 1000; // imposed server-side
 
@@ -182,7 +184,7 @@ const WayUpdater = ({
       gridAutoColumns: '1fr',
       gap: 5,
     }}>
-      {followUser && <UserLocationTracker />}
+      <LocateControl />
       { map.getZoom() < minZoomForWays || ways.length > MAX_WAYS ? (
         <div>Zoom in to see and mark asphalt quality.</div>
       ) : (
