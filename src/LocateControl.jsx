@@ -3,31 +3,36 @@ import { useEffect } from 'react';
 
 import('leaflet.locatecontrol/dist/L.Control.Locate.min.css');
 
-let LC = null;
-try {
-  const locatecontrol = await import('leaflet.locatecontrol');
-  LC = locatecontrol.LocateControl;
-}
-catch (error) {
-  console.error('Could not load leaflet.locatecontrol');
-}
-
 function LocateControl({ options }) {
   const map = useMap();
 
-  if (LC) {
-    useEffect(() => {
-      const locateControl = new LC({
-        keepCurrentZoomLevel: true,
-        ...options,
-      })
-      locateControl.addTo(map);
+  useEffect(() => {
+    let locateControl = null;
+    const loadAndConfigure = async () => {
+      try {
+        const LCM = await import('leaflet.locatecontrol');
+        if (locateControl)
+          return;
+        locateControl = new LCM.LocateControl({
+          keepCurrentZoomLevel: true,
+          ...options,
+        })
+        locateControl.addTo(map);
+      }
+      catch (error) {
+        console.error('Could not load leaflet.locatecontrol', error);
+      }
+    }
 
-      return () => {
+    // Actual call
+    loadAndConfigure();
+
+    return () => {
+      if (locateControl)
         map.removeControl(locateControl);
-      };
-    }, [map, options]);
-  }
+      locateControl = 'dont-load'; // prevent accidental loading after await
+    };
+  }, [map, options]);
 
   return null;
 }
