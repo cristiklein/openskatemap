@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import L from 'leaflet';
 import fetchWays from './fetchWays';
 import axios, { AxiosError } from 'axios';
