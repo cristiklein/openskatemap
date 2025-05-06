@@ -72,6 +72,30 @@ describe('fetchWays', () => {
     ]);
   });
 
+  it('should retrieve expected cycleways with bicycle=yes tags', async () => {
+    const south = 52.386015;
+    const west = 4.868831;
+    const north = 52.388883;
+    const east = 4.874298;
+
+    const bounds = L.latLngBounds(
+      L.latLng(south, west),
+      L.latLng(north, east)
+    );
+
+    const ways = await fetchWays(bounds);
+
+    expect(ways.length).toBe(22);
+    expect(ways[0].wayId).toBe(11535112);
+    expect(ways[0].path[0]).toStrictEqual(L.latLng(52.3863161, 4.8657807));
+  });
+});
+
+describe('failures', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('should throw a friendly network error', async () => {
     const south = 55.66879962984757;
     const west = 13.073666095733644;

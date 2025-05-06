@@ -15,7 +15,7 @@ async function unfriendlyFetchWays(
     [out:json][timeout:25];
     (
       way["highway"="cycleway"]({{bbox}});
-      way["bicycle"="designated"]({{bbox}});
+      way["bicycle"]({{bbox}});
     );
     out geom;
   `.replaceAll('{{bbox}}', bbox);
