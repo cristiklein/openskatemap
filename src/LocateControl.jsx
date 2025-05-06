@@ -15,6 +15,9 @@ function LocateControl({ options }) {
           return;
         locateControl = new LCM.LocateControl({
           keepCurrentZoomLevel: true,
+          locateOptions: {
+            enableHighAccuracy: true,
+          },
           ...options,
         })
         locateControl.addTo(map);
