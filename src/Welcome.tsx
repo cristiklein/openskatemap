@@ -53,7 +53,10 @@ const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({ handleStart }) => {
         console.error('Error loading welcome content:', err);
       }
     };
-    fetchData();
+
+    if (process.env.NODE_ENV !== 'test') {
+      fetchData();
+    }
   }, []);
 
   return (

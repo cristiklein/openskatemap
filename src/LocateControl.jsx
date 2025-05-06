@@ -10,6 +10,10 @@ function LocateControl({ options }) {
     let locateControl = null;
     const loadAndConfigure = async () => {
       try {
+        if (process.env.NODE_ENV == 'test') {
+          console.log("leaflet.locatecontrol doesn't work well in unit testing");
+          return;
+        }
         const LCM = await import('leaflet.locatecontrol');
         if (locateControl)
           return;
