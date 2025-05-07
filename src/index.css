@@ -17,6 +17,6 @@ body {
   width: 100%;
 }
 
-a[data-external]::after {
+a[target="_blank"]::after {
   content: " ↗";
 }

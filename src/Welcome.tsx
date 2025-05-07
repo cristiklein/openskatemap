@@ -47,11 +47,11 @@ const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({ handleStart }) => {
       try {
         const response = await fetch('/welcome.html');
         const html = await response.text();
-        const purifiedHtml = DOMPurify.sanitize(html);
+        const purifiedHtml = DOMPurify.sanitize(html, {ADD_ATTR: ['target']});
 
         const response2 = await fetch('/changelog.html');
         const html2 = await response2.text();
-        const purifiedHtml2 = DOMPurify.sanitize(html2);
+        const purifiedHtml2 = DOMPurify.sanitize(html2, {ADD_ATTR: ['target']});
 
         setWelcomeContent(purifiedHtml + purifiedHtml2);
       } catch (err) {
