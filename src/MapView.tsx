@@ -237,8 +237,10 @@ const MapView = () => {
         top: '50%',
         left: '50%',
         zIndex: 1000,
-        width: 0,
-        height: 0,
+        width: 24,
+        height: 24,
+        marginLeft: -12,
+        marginTop: -12,
         textAlign: 'center',
         verticalAlign: 'middle',
       }}>
