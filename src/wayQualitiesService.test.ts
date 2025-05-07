@@ -1,8 +1,21 @@
-import { describe, it, expect } from 'vitest';
+import { afterAll, beforeAll, describe, it, expect } from 'vitest';
 import { fetchWayQualities, storeWayQualities, WayQuality } from './wayQualitiesService';
 
-/* Needs npm run dev:server */
-describe.skip('wayQualitiesService', () => {
+import { app, initDb } from '../server/server';
+import { Server } from 'http';
+
+let server: Server;
+
+beforeAll(async () => {
+  await initDb();
+  server = app.listen(3001); // use a test port
+});
+
+afterAll(() => {
+  server.close();
+});
+
+describe('wayQualitiesService', () => {
   it('should store', async () => {
     const wayQualities = [
       {

@@ -23,6 +23,7 @@ const metricsMiddleware = promBundle({
 app.use(metricsMiddleware);
 
 const allowedOrigins = [
+  'http://localhost:3000',
   'http://localhost:5173',
   'https://cristiklein.github.io',
   'https://openskatemap.se',
