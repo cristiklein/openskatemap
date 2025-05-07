@@ -15,6 +15,7 @@ async function unfriendlyFetchWays(
     [out:json][timeout:25];
     (
       way["highway"="cycleway"]({{bbox}});
+      way["highway"="raceway"]({{bbox}});
       way["bicycle"]({{bbox}});
     );
     out geom;
