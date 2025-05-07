@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.35.0](https://github.com/cristiklein/openskatemap/compare/v0.34.3...v0.35.0) (2025-05-07)
+
+### Features
+
+* **release:** Open links in release notes in a new window ([781220f](https://github.com/cristiklein/openskatemap/commit/781220fc8672cb16dccf791bb06686d6afb05794))
+
 ## [0.34.3](https://github.com/cristiklein/openskatemap/compare/v0.34.2...v0.34.3) (2025-05-07)
 
 ### Features
