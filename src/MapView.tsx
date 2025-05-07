@@ -80,7 +80,12 @@ const WayUpdater = ({
 
         setWays(newWays);
         setWayQualities(newWayQualities);
-        setError('');
+        if (newWays.length === 0) {
+          setError('No paths to show on the map. Go to another area to find paths.');
+        }
+        else {
+          setError('');
+        }
       }
       catch (error) {
         console.error(error);

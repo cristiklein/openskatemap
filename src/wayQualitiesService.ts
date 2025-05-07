@@ -10,6 +10,11 @@ export interface WayQuality {
 }
 
 export async function fetchWayQualities(wayIds: number[]): Promise<WayQuality[]> {
+  if (wayIds.length === 0) {
+    // It doesn't make sense to ask the server for no data
+    return [];
+  }
+
   const url = `${import.meta.env.VITE_API_BASE_URL}/openskatemap/api/way-qualities`;
 
   try {

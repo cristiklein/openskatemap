@@ -51,4 +51,9 @@ describe('wayQualitiesService', () => {
       })
     ]);
   });
+
+  it('should not error with an empty request', async () => {
+    const wqs = await fetchWayQualities([]);
+    expect(wqs).toEqual([]);
+  });
 });
