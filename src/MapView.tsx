@@ -39,7 +39,21 @@ const initialWays: Way[] = [
     ],
     quality: 1,
   },
+  {
+    wayId: 4,
+    path: [
+      latLng([55.6010, 12.9665]),
+      latLng([55.6013, 12.9670]),
+    ],
+    quality: undefined,
+  },
 ];
+
+const initialWayQualities: Map<number, Quality> = new Map([
+  [1, -1],
+  [2, 0],
+  [3, 1],
+]);
 
 const minZoomForWays = 15;
 
@@ -233,7 +247,7 @@ function qualityToColor(quality: Quality): string {
 
 const MapView = () => {
   const [ways, setWays] = useState<Way[]>(initialWays);
-  const [wayQualities, setWayQualities] = useState(new Map<number, Quality>());
+  const [wayQualities, setWayQualities] = useState(initialWayQualities);
 
   return (
     <div style={{ height: '100%', width: '100%' }}>

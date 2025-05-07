@@ -121,3 +121,17 @@ describe('Way Qualities API store', () => {
     ]);
   });
 });
+
+describe('generic endpoints', () => {
+  it('should GET /version', async () => {
+    const res = await request(app)
+      .get('/version');
+    expect(res.statusCode).toBe(200);
+  });
+
+  it('should GET /health', async () => {
+    const res = await request(app)
+      .get('/health');
+    expect(res.statusCode).toBe(200);
+  });
+});
