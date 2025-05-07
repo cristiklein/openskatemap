@@ -1,0 +1,14 @@
+{
+  "npm": {
+    "publish": false
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": "conventionalcommits",
+      "infile": "CHANGELOG.md"
+    }
+  },
+  "hooks": {
+    "after:release": "node scripts/generate-html-release-notes.js"
+  }
+}
