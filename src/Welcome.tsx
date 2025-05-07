@@ -48,7 +48,12 @@ const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({ handleStart }) => {
         const response = await fetch('/welcome.html');
         const html = await response.text();
         const purifiedHtml = DOMPurify.sanitize(html);
-        setWelcomeContent(purifiedHtml);
+
+        const response2 = await fetch('/changelog.html');
+        const html2 = await response2.text();
+        const purifiedHtml2 = DOMPurify.sanitize(html2);
+
+        setWelcomeContent(purifiedHtml + purifiedHtml2);
       } catch (err) {
         console.error('Error loading welcome content:', err);
       }
