@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.38.0](https://github.com/cristiklein/openskatemap/compare/v0.37.0...v0.38.0) (2025-05-07)
+
+### Features
+
+* **client:** Also display raceways, which might be used for skating ([40309c9](https://github.com/cristiklein/openskatemap/commit/40309c9e011be78a7bc05ef275d69d8c79cc96a9))
+
 ## [0.37.0](https://github.com/cristiklein/openskatemap/compare/v0.36.0...v0.37.0) (2025-05-07)
 
 ### Bug Fixes
