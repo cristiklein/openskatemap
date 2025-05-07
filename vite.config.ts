@@ -11,7 +11,8 @@ const welcomeHtml = readFileSync(resolve(__dirname, 'public/welcome.html'), 'utf
 
 console.log('Rendering changelog to public/changelog.html');
 const changeLogMd = readFileSync(resolve(__dirname, 'CHANGELOG.md'), 'utf-8');
-const changeLogHtml = (new showdown.Converter()).makeHtml(changeLogMd);
+const converter = new showdown.Converter({ openLinksInNewWindow: true });
+const changeLogHtml = converter.makeHtml(changeLogMd);
 writeFileSync(resolve(__dirname, 'public/changelog.html'), changeLogHtml);
 
 // https://vite.dev/config/
