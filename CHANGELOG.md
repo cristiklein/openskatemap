@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.37.0](https://github.com/cristiklein/openskatemap/compare/v0.36.0...v0.37.0) (2025-05-07)
+
+### Bug Fixes
+
+* **client:** Improve messaging when there are no paths to show ([2fc5b48](https://github.com/cristiklein/openskatemap/commit/2fc5b485ffe17b22d9d2eb93c5d37253892009f2))
+
 ## [0.36.0](https://github.com/cristiklein/openskatemap/compare/v0.35.0...v0.36.0) (2025-05-07)
 
 ### Features

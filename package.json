@@ -3,7 +3,7 @@
   "homepage": "https://openstakemap.se/",
   "private": true,
   "type": "module",
-  "version": "0.36.0",
+  "version": "0.37.0",
   "scripts": {
     "dev": "concurrently \"npm:dev:*\"",
     "dev:client": "vite --host",
