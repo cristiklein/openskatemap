@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.36.0](https://github.com/cristiklein/openskatemap/compare/v0.35.0...v0.36.0) (2025-05-07)
+
+### Features
+
+* **client:** Show links opening in a new window ([9743acd](https://github.com/cristiklein/openskatemap/commit/9743acd08eea36088adb33187e5e5662e79ae953))
+
 ## [0.35.0](https://github.com/cristiklein/openskatemap/compare/v0.34.3...v0.35.0) (2025-05-07)
 
 ### Features
