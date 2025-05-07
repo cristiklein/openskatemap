@@ -3,7 +3,5 @@
 set -ex
 
 npm run predeploy
-npm version minor
+npx release-it minor
 npm run deploy
-
-git push origin main --tags
