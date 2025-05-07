@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.34.3](https://github.com/cristiklein/openskatemap/compare/v0.34.2...v0.34.3) (2025-05-07)
+
+### Features
+
+* **release:** Use auto-generated release notes ([6191531](https://github.com/cristiklein/openskatemap/commit/61915316640a422431d3d471635160bf0ebab5f5))
+
 ## [0.34.2](https://github.com/cristiklein/openskatemap/compare/v0.34.1...v0.34.2) (2025-05-07)
 
 ### Bug Fixes
