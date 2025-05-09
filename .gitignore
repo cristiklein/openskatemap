@@ -25,7 +25,7 @@ dist-server
 *.sw?
 
 # Generated changelog
-public/changelog.html
+src/changelog.html
 
 # npm run test -- --coverage
 /coverage
