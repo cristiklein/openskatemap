@@ -1,4 +1,5 @@
 import { LatLng } from 'leaflet';
+import { Way } from './types';
 
 // Function to calculate the distance from a point to a line segment using L.LatLng
 export function getDistanceToLineSegment(
@@ -45,4 +46,28 @@ export function getDistanceToLineSegment(
 
   // Return the distance from the point to the closest point on the line
   return pointLatLng.distanceTo(closestPoint);
+}
+
+export function getClosestWay(centerLatLng: LatLng, ways: Way[]): Way | undefined {
+  let closestWay: Way | undefined;
+  let closestDistance = Infinity;
+
+  ways.forEach((way) => {
+    for (let i = 0; i < way.path.length - 1; i++) {
+      const start = way.path[i];
+      const end = way.path[i + 1];
+
+      const distance = getDistanceToLineSegment(
+        centerLatLng,
+        start,
+        end);
+
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestWay = way;
+      }
+    }
+  });
+
+  return closestWay;
 }

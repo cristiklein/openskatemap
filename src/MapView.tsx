@@ -5,7 +5,7 @@ import { Quality, Way } from './types';
 import debounce from 'lodash.debounce';
 import fetchWays from './fetchWays';
 import { fetchWayQualities, storeWayQualities } from './wayQualitiesService';
-import { getDistanceToLineSegment } from './utils';
+import { getClosestWay } from './utils';
 
 // @ts-expect-error: LocateControl is a JS file without types
 import LocateControl from './LocateControl';
@@ -122,32 +122,15 @@ const WayUpdater = ({
   }, [map, debouncedFetchWays]);
 
   const updateClosestWayQuality = async (quality: Quality) => {
-    let closestWayId: number | null = null;
-    let closestDistance = Infinity;
-
     const centerLatLng = map.getCenter();
     const latitude = centerLatLng.lat;
     const longitude = centerLatLng.lng;
+    const closestWay = getClosestWay(centerLatLng, ways);
 
-    ways.forEach((way) => {
-      for (let i = 0; i < way.path.length - 1; i++) {
-        const start = way.path[i];
-        const end = way.path[i + 1];
+    if (closestWay !== undefined) {
+      const closestWayId = closestWay.wayId;
 
-        const distance = getDistanceToLineSegment(
-          centerLatLng,
-          start,
-          end);
-
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestWayId = way.wayId;
-        }
-      }
-    });
-
-    if (closestWayId !== null) {
-      console.log(`Setting way ${closestWayId} to ${quality}`);
+      console.log(`Setting way ${closestWayId} to ${quality} from ${latitude},${longitude}`);
       setWayQualities(new Map(wayQualities).set(closestWayId, quality));
       setStatus('Saving ...');
       try {
