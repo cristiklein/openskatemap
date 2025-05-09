@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.39.0](https://github.com/cristiklein/openskatemap/compare/v0.38.0...v0.39.0) (2025-05-09)
+
+### Bug Fixes
+
+* **chart:** Enable helm test ([9412b1a](https://github.com/cristiklein/openskatemap/commit/9412b1a20df6af2f90b3a03f08b41102755a1f61))
+
 ## [0.38.0](https://github.com/cristiklein/openskatemap/compare/v0.37.0...v0.38.0) (2025-05-07)
 
 ### Features
