@@ -7,9 +7,16 @@ metadata:
   annotations:
     "helm.sh/hook": test-success
 spec:
+  securityContext:
+    {{- toYaml .Values.podSecurityContext | nindent 4 }}
   containers:
-    - name: wget
-      image: busybox
-      command: ['wget']
+    - name: curl
+      securityContext:
+        {{- toYaml .Values.securityContext | nindent 8 }}
+      image: "{{ .Values.test.image.repository }}:{{ .Values.test.image.tag | default .Chart.AppVersion }}"
+      imagePullPolicy: {{ .Values.test.image.pullPolicy }}
+      command: ['curl']
       args: ['{{ include "welkin-user-demo.fullname" . }}:{{ .Values.service.port }}']
+      resources:
+        {{- toYaml .Values.test.resources | nindent 8 }}
   restartPolicy: Never

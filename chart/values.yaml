@@ -23,12 +23,12 @@ securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop:
-    - ALL
+      - ALL
   runAsNonRoot: true
   seccompProfile:
     type: "RuntimeDefault"
   # readOnlyRootFilesystem: true
-  # runAsUser: 1000
+  runAsUser: 1000
 
 service:
   type: ClusterIP
@@ -107,3 +107,16 @@ networkPolicy:
   ## @param networkPolicy.ingressNSPodMatchLabels Pod labels to match to allow traffic from other namespaces
   ingressNSMatchLabels: {}
   ingressNSPodMatchLabels: {}
+
+test:
+  image:
+    repository: i-didnt-read-the-docs/curlimages/curl:8.4.0
+    pullPolicy: IfNotPresent
+    tag: ""
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
