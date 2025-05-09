@@ -26,3 +26,6 @@ dist-server
 
 # Generated changelog
 public/changelog.html
+
+# npm run test -- --coverage
+/coverage
