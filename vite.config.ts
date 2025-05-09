@@ -7,13 +7,13 @@ import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import showdown from 'showdown';
 
-const welcomeHtml = readFileSync(resolve(__dirname, 'public/welcome.html'), 'utf-8');
+const welcomeHtml = readFileSync(resolve(__dirname, 'src/welcome.html'), 'utf-8');
 
-console.log('Rendering changelog to public/changelog.html');
+console.log('Rendering changelog to src/changelog.html');
 const changeLogMd = readFileSync(resolve(__dirname, 'CHANGELOG.md'), 'utf-8');
 const converter = new showdown.Converter({ openLinksInNewWindow: true });
 const changeLogHtml = converter.makeHtml(changeLogMd);
-writeFileSync(resolve(__dirname, 'public/changelog.html'), changeLogHtml);
+writeFileSync(resolve(__dirname, 'src/changelog.html'), changeLogHtml);
 
 // https://vite.dev/config/
 export default defineConfig({

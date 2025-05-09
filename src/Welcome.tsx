@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import welcomeHtml from './welcome.html?raw';
+import changeLogHtml from './changelog.html?raw';
 import DOMPurify from 'dompurify';
 
 const SEEN_KEY = "seenWelcome";
@@ -40,29 +42,10 @@ type WelcomeOverlayProps = {
 };
 
 const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({ handleStart }) => {
-  const [welcomeContent, setWelcomeContent] = useState('');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/welcome.html');
-        const html = await response.text();
-        const purifiedHtml = DOMPurify.sanitize(html, {ADD_ATTR: ['target']});
-
-        const response2 = await fetch('/changelog.html');
-        const html2 = await response2.text();
-        const purifiedHtml2 = DOMPurify.sanitize(html2, {ADD_ATTR: ['target']});
-
-        setWelcomeContent(purifiedHtml + purifiedHtml2);
-      } catch (err) {
-        console.error('Error loading welcome content:', err);
-      }
-    };
-
-    if (process.env.NODE_ENV !== 'test') {
-      fetchData();
-    }
-  }, []);
+  const purifiedHtml = DOMPurify.sanitize(
+    welcomeHtml + changeLogHtml,
+    {ADD_ATTR: ['target']}
+  );
 
   return (
     <div style={{
@@ -88,21 +71,17 @@ const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({ handleStart }) => {
         }}>
           <button style={{fontSize: 'x-small'}} onClick={handleStart}>Close tutorial</button>
         </div>
-        {welcomeContent ? (
-          <div
-            style={{
-              overflowY: 'scroll',
-              height: 'calc(100% - 20px)',
-              width: '100%',
-            }}
-            dangerouslySetInnerHTML={{
-              __html: welcomeContent,
-            }}
-          >
-          </div>
-        ) : (
-          <p>Loading welcome content...</p>
-        )}
+        <div
+          style={{
+            overflowY: 'scroll',
+            height: 'calc(100% - 20px)',
+            width: '100%',
+          }}
+          dangerouslySetInnerHTML={{
+            __html: purifiedHtml,
+          }}
+        >
+        </div>
       </div>
     </div>
   );
