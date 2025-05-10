@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.0](https://github.com/cristiklein/openskatemap/compare/v0.40.0...v0.41.0) (2025-05-10)
+
+### Features
+
+* **client:** Improve network error messages ([0e9ac6b](https://github.com/cristiklein/openskatemap/commit/0e9ac6b45e417903aa53224f2e90620e455b5a86))
+* **error:** Improved code handling various network and server failures ([18b1155](https://github.com/cristiklein/openskatemap/commit/18b11559bbfbf3b5cedd6da91e9de243d74d6248))
+
 ## [0.40.0](https://github.com/cristiklein/openskatemap/compare/v0.39.0...v0.40.0) (2025-05-10)
 
 ## [0.39.0](https://github.com/cristiklein/openskatemap/compare/v0.38.0...v0.39.0) (2025-05-09)
