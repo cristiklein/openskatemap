@@ -1,7 +1,8 @@
-import { afterEach, describe, it, expect, vi } from 'vitest';
+import { afterAll, beforeAll, afterEach, describe, it, expect  } from 'vitest';
 import L from 'leaflet';
 import fetchWays from './fetchWays';
-import axios, { AxiosError } from 'axios';
+import { http, HttpResponse } from 'msw'
+import { setupServer } from 'msw/node'
 
 describe('fetchWays', () => {
   it('should retrieve expected cycleways', async () => {
@@ -91,10 +92,19 @@ describe('fetchWays', () => {
   });
 });
 
-describe('failures', () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
+describe('network failures', () => {
+  const server = setupServer(...[
+    http.post('https://overpass-api.de/api/interpreter', () => {
+      return HttpResponse.error();
+    }),
+    http.get('https://overpass-api.de/api/interpreter', () => {
+      return HttpResponse.error();
+    }),
+  ]);
+
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
 
   it('should throw a friendly network error', async () => {
     const south = 55.66879962984757;
@@ -107,14 +117,64 @@ describe('failures', () => {
       L.latLng(north, east)
     );
 
-    vi.spyOn(axios, 'post').mockRejectedValue(new AxiosError('Network Error'));
-
     await expect(fetchWays(bounds)).rejects.toThrow('No internet connection. Please check your network and try again.');
+  });
+});
 
-    expect(axios.post).toHaveBeenCalledWith(
-      'https://overpass-api.de/api/interpreter',
-      expect.anything(),
-      expect.anything(),
+describe('server failures', () => {
+  const server = setupServer(...[
+    http.post('https://overpass-api.de/api/interpreter', () => {
+      return new HttpResponse(null, { status: 500 })
+    }),
+    http.get('https://overpass-api.de/api/interpreter', () => {
+      return new HttpResponse(null, { status: 500 })
+    }),
+  ]);
+
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
+
+  it('should throw a friendly network error', async () => {
+    const south = 55.66879962984757;
+    const west = 13.073666095733644;
+    const north = 55.676870569996126;
+    const east = 13.081712722778322;
+
+    const bounds = L.latLngBounds(
+      L.latLng(south, west),
+      L.latLng(north, east)
     );
+
+    await expect(fetchWays(bounds)).rejects.toThrow('Sorry, Overpass is experiencing technical difficulties. Please try again later.');
+  });
+});
+
+describe('other failures', () => {
+  const server = setupServer(...[
+    http.post('https://overpass-api.de/api/interpreter', () => {
+      return new HttpResponse(null, { status: 501 })
+    }),
+    http.get('https://overpass-api.de/api/interpreter', () => {
+      return new HttpResponse(null, { status: 501 })
+    }),
+  ]);
+
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
+
+  it('should throw a friendly network error', async () => {
+    const south = 55.66879962984757;
+    const west = 13.073666095733644;
+    const north = 55.676870569996126;
+    const east = 13.081712722778322;
+
+    const bounds = L.latLngBounds(
+      L.latLng(south, west),
+      L.latLng(north, east)
+    );
+
+    await expect(fetchWays(bounds)).rejects.toThrow('Something went wrong while fetching data from Overpass. Please try again later.');
   });
 });

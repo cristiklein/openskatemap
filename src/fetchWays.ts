@@ -82,19 +82,13 @@ async function fetchWays(
       } else if (error.response.status === 500) {
         // Server error
         throw new FriendlyError(
-          'Sorry, we are experiencing technical difficulties. Please try again later.',
+          'Sorry, Overpass is experiencing technical difficulties. Please try again later.',
           FriendlyErrorCode.SERVER_ERROR,
-          error);
-      } else if (error.response.status === 404) {
-        // Not found
-        throw new FriendlyError(
-          'The requested data was not found. Please try again later.',
-          FriendlyErrorCode.NOT_FOUND,
           error);
       } else {
         // Other errors
         throw new FriendlyError(
-          'Something went wrong. Please try again later.',
+          'Something went wrong while fetching data from Overpass. Please try again later.',
           FriendlyErrorCode.GENERIC_ERROR,
           error);
       }
