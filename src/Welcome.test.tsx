@@ -24,4 +24,22 @@ describe('Welcome', () => {
 
     expect(screen.queryByText('Welcome to Open Skate Map!')).toBeInTheDocument();
   });
+
+  it('saves that user hid welcome screen', async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(<Welcome />);
+    expect(screen.queryByText('?')).toBeInTheDocument();
+
+    expect(screen.queryByText('Welcome to Open Skate Map!')).toBeInTheDocument();
+
+    await user.click(screen.getByText('Close tutorial'));
+    expect(screen.queryByText('Welcome to Open Skate Map!')).not.toBeInTheDocument();
+
+    unmount();
+    expect(screen.queryByText('?')).not.toBeInTheDocument();
+
+    render(<Welcome />);
+    expect(screen.queryByText('?')).toBeInTheDocument();
+    expect(screen.queryByText('Welcome to Open Skate Map!')).not.toBeInTheDocument();
+  });
 });
