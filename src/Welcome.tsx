@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import welcomeHtml from './welcome.html?raw';
-import changeLogHtml from './changelog.html?raw';
 import DOMPurify from 'dompurify';
 
 const SEEN_KEY = "seenWelcome";
@@ -43,7 +41,7 @@ type WelcomeOverlayProps = {
 
 const WelcomeOverlay: React.FC<WelcomeOverlayProps> = ({ handleStart }) => {
   const purifiedHtml = DOMPurify.sanitize(
-    welcomeHtml + changeLogHtml,
+    __WELCOME_HTML__ + __CHANGELOG_HTML__,
     {ADD_ATTR: ['target']}
   );
 

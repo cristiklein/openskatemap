@@ -39,5 +39,7 @@ export default defineConfig({
   },
   define: {
     '__APP_VERSION__': JSON.stringify('test-version'),
+    '__CHANGELOG_HTML__': JSON.stringify('<h1>Changelog</h1>'),
+    '__WELCOME_HTML__': JSON.stringify('<h1>Welcome to Open Skate Map!</h1>'),
   },
 });
