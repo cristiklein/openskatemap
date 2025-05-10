@@ -1,5 +1,5 @@
 import { LatLngBounds, latLng } from 'leaflet';
-import { Way } from './types';
+import { FriendlyError, Way } from './types';
 import axios, { AxiosError } from 'axios';
 
 async function unfriendlyFetchWays(
@@ -42,27 +42,29 @@ async function unfriendlyFetchWays(
   return newWays;
 };
 
-enum FriendlyErrorCode {
-  GENERIC_ERROR = 'GENERIC_ERROR',
-  NETWORK_ERROR = 'NETWORK_ERROR',
-  SERVER_ERROR = 'SERVER_ERROR',
-  NOT_FOUND = 'NOT_FOUND',
-  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
-}
-
-class FriendlyError extends Error {
-  public code: FriendlyErrorCode;
-  public originalError: Error;
-
-  constructor(
-    message: string,
-    code: FriendlyErrorCode = FriendlyErrorCode.GENERIC_ERROR,
-    originalError: Error,
-  ) {
-    super(message);
-    this.name = 'FriendlyError';
-    this.code = code;
-    this.originalError = originalError;
+export function handleAxiosError(error: unknown): never {
+  if (error instanceof AxiosError) {
+    if (!error.response) {
+      // No response, probably a network error
+      throw new FriendlyError(
+        'No internet connection. Please check your network and try again.',
+        FriendlyError.NETWORK_ERROR,
+        error);
+    } else if (error.response.status === 500) {
+      // Server error
+      throw new FriendlyError(
+        'Sorry, Overpass is experiencing technical difficulties. Please try again later.',
+        FriendlyError.SERVER_ERROR,
+        error);
+    } else {
+      // Other errors
+      throw new FriendlyError(
+        'Something went wrong while fetching data from Overpass. Please try again later.',
+        FriendlyError.UNKNOWN_ERROR,
+        error);
+    }
+  } else {
+    throw error;
   }
 }
 
@@ -72,29 +74,7 @@ async function fetchWays(
   try {
     return await unfriendlyFetchWays(bounds);
   } catch (error) {
-    if (error instanceof AxiosError) {
-      if (!error.response) {
-        // No response, probably a network error
-        throw new FriendlyError(
-          'No internet connection. Please check your network and try again.',
-          FriendlyErrorCode.NETWORK_ERROR,
-          error);
-      } else if (error.response.status === 500) {
-        // Server error
-        throw new FriendlyError(
-          'Sorry, Overpass is experiencing technical difficulties. Please try again later.',
-          FriendlyErrorCode.SERVER_ERROR,
-          error);
-      } else {
-        // Other errors
-        throw new FriendlyError(
-          'Something went wrong while fetching data from Overpass. Please try again later.',
-          FriendlyErrorCode.GENERIC_ERROR,
-          error);
-      }
-    } else {
-      throw error;
-    }
+    handleAxiosError(error);
   }
 }
 

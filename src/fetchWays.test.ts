@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, afterEach, describe, it, expect  } from 'vitest';
 import L from 'leaflet';
-import fetchWays from './fetchWays';
+import fetchWays, { handleAxiosError } from './fetchWays';
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 
@@ -176,5 +176,15 @@ describe('other failures', () => {
     );
 
     await expect(fetchWays(bounds)).rejects.toThrow('Something went wrong while fetching data from Overpass. Please try again later.');
+  });
+});
+
+describe('handleAxiosError', () => {
+  it('passes through non-Axios errors untouched', () => {
+    const edgeErrors = [undefined, 'string error', new Error('42')];
+
+    for (const error of edgeErrors) {
+      expect(() => handleAxiosError(error)).toThrow(error);
+    }
   });
 });

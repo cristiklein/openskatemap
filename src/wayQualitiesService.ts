@@ -1,4 +1,4 @@
-import { Quality } from './types';
+import { FriendlyError, Quality } from './types';
 import axios from 'axios';
 
 export interface WayQuality {
@@ -7,6 +7,34 @@ export interface WayQuality {
   timestamp?: string;
   latitude?: number;
   longitude?: number;
+}
+
+export function handleAxiosError(error: unknown): never {
+  if (axios.isAxiosError(error)) {
+    if (process.env.NODE_ENV !== 'test')
+      console.error('wayQualityService failed:', error);
+    if (!error.response) {
+      // No response, probably a network error
+      throw new FriendlyError(
+        'No internet connection. Please check your network and try again.',
+        FriendlyError.NETWORK_ERROR,
+        error);
+    } else if (error.response.status === 500) {
+      // Server error
+      throw new FriendlyError(
+        'Sorry, OpenSkateMap is experiencing technical difficulties. Please try again later.',
+        FriendlyError.SERVER_ERROR,
+        error);
+    } else {
+      // Other errors
+      throw new FriendlyError(
+        'Something went wrong while fetching data from OpenSkateMap. Please try again later.',
+        FriendlyError.UNKNOWN_ERROR,
+        error);
+    }
+  } else {
+    throw error;
+  }
 }
 
 export async function fetchWayQualities(wayIds: number[]): Promise<WayQuality[]> {
@@ -24,13 +52,7 @@ export async function fetchWayQualities(wayIds: number[]): Promise<WayQuality[]>
 
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Request failed with status:', error.response?.status);
-      console.error('Response data:', error.response?.data);
-    } else {
-      console.error('Unexpected error:', error);
-    }
-    throw error;
+    handleAxiosError(error);
   }
 }
 
@@ -44,12 +66,6 @@ export async function storeWayQualities(wq: WayQuality[]) {
 
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Request failed with status:', error.response?.status);
-      console.error('Response data:', error.response?.data);
-    } else {
-      console.error('Unexpected error:', error);
-    }
-    throw error;
+    handleAxiosError(error);
   }
 }
