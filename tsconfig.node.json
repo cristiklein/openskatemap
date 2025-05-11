@@ -21,8 +21,6 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
-    "cypress",
-    "cypress.config.ts",
     "vite.config.ts",
     "server",
     "scripts"
